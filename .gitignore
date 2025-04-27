@@ -1,0 +1,48 @@
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore IDE-specific files
+.vs/
+.vscode/
+.idea/
+*.code-workspace
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Ignore compiled DLLs and executables
+*.dll
+*.exe
+*.pdb
+
+# Ignore NuGet packages
+*.nupkg
+packages/
+.nuget/
+
+# Ignore Rider and JetBrains files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Ignore OpenGL-related cache or temporary files
+.DS_Store
+Thumbs.db
+
+# Ignore environment-specific files
+.env
+.env.*
+
+# Ignore generated files
+Generated/
