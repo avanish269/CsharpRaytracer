@@ -102,9 +102,9 @@ namespace CsharpRaytracer
                     1.0f,
                     new Vector3(0.0f, 1.0f, 1.0f)));
 
-            Vector3 corner1 = new Vector3(-1f, 42f, -151f); // Top-left
-            Vector3 corner2 = new Vector3(1f, 42f, -151f);  // Top-right
-            Vector3 corner3 = new Vector3(-1f, 42f, -149f); // Bottom-left
+            Vector3 corner1 = new Vector3(-1f, 40f, -151f); // Top-left
+            Vector3 corner2 = new Vector3(1f, 40f, -151f);  // Top-right
+            Vector3 corner3 = new Vector3(-1f, 40f, -149f); // Bottom-left
 
             // Center bright white light
             this.areaLights.Add(
@@ -117,6 +117,15 @@ namespace CsharpRaytracer
                     1.0f,
                     1.0f,
                     new Vector3(1.0f, 1.0f, 1.0f)));
+
+            // Floor
+            this.sceneObjects.Add(
+                new Plane(
+                    new Vector3(0f, -50f, -150f),
+                    new Vector3(0.0f, 1.0f, 0.0f),
+                    u: new Vector3(50, 0, 0),
+                    v: new Vector3(0, 0, 50),
+                    white));
 
             this.sceneObjects.Add(new Sphere(new Vector3(0f, 32f, -150f), 5f, gold));
 

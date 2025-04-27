@@ -156,9 +156,12 @@ namespace CsharpRaytracer
                 {
                     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-                    float fieldOfView = 5.0f;
+                    float fieldOfView = 45.0f;
                     float angle = 30 * MathF.PI / 180;
-                    Vector3 source = new Vector3(-120.0f, 32.0f + (150.0f * MathF.Sin(angle)), -150.0f * (1 - MathF.Cos(angle)));
+                    Vector3 source = new Vector3(
+                        -120.0f,
+                        32.0f + (150.0f * MathF.Sin(angle)),
+                        -150.0f * (1 - MathF.Cos(angle)));
                     Vector3 destination = new Vector3(0, 32, -150);
                     Vector3 cameraUp = new Vector3(0, 1, 0);
                     Camera camera = new Camera(
@@ -167,8 +170,7 @@ namespace CsharpRaytracer
                         cameraUp,
                         fieldOfView,
                         window.Size.Y,
-                        window.Size.X
-                    );
+                        window.Size.X);
 
                     Render(data, window.Size.Y, window.Size.X, scene, camera);
 
