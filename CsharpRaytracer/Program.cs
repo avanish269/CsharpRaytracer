@@ -92,7 +92,6 @@ namespace CsharpRaytracer
             OpenGLDraw openGLDraw = new OpenGLDraw();
 
             Scene scene = new Scene();
-            scene.CreateScene();
 
             var nativeWindowSettings = new NativeWindowSettings()
             {
@@ -157,7 +156,7 @@ namespace CsharpRaytracer
                 {
                     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-                    float fieldOfView = 45;
+                    float fieldOfView = 5.0f;
                     float angle = 30 * MathF.PI / 180;
                     Vector3 source = new Vector3(-120.0f, 32.0f + (150.0f * MathF.Sin(angle)), -150.0f * (1 - MathF.Cos(angle)));
                     Vector3 destination = new Vector3(0, 32, -150);
