@@ -24,10 +24,13 @@ namespace CsharpRaytracer
             this.height = H;
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb8, W, H, 0,
                 PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
-            // GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-            // GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+
+#pragma warning disable S125 // Sections of code should not be commented out
+                            // GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                            // GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
             GL.GenFramebuffers(1, out this.fbo);
+#pragma warning restore S125 // Sections of code should not be commented out
             GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, this.fbo);
             GL.FramebufferTexture2D(FramebufferTarget.ReadFramebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texture, 0);
 
