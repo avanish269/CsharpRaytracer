@@ -1,0 +1,12 @@
+    # .editorconfig
+
+    # Set the scope to C# files
+    [*.cs]
+
+    # IDE0009: Member access should be qualified (this. or Me.)
+    # Set to 'true' to require qualification (e.g., this.member)
+    # Set to 'false' to prefer qualification only when necessary (e.g., member unless ambiguous)
+    dotnet_style_qualification_for_field = true:warning
+    dotnet_style_qualification_for_property = true:warning
+    dotnet_style_qualification_for_method = true:warning
+    dotnet_style_qualification_for_event = true:warning
