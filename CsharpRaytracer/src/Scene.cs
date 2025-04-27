@@ -78,13 +78,13 @@ namespace CsharpRaytracer
                     1.0f,
                     new Vector3(1.0f, 1.0f, 0.0f)));
 
-            // Top bright cyan light
+            // Top bright yellow light
             this.lights.Add(
                 new DirectionalLight(
                     new Vector3(37.5f, 101f, -187.5f),
                     new Vector3(0f, 26f, -150f),
                     1.0f,
-                    new Vector3(0.0f, 1.0f, 1.0f)));
+                    new Vector3(1.0f, 1.0f, 0.0f)));
 
             // Bottom bright cyan light
             this.lights.Add(
@@ -94,13 +94,13 @@ namespace CsharpRaytracer
                     1.0f,
                     new Vector3(0.0f, 1.0f, 1.0f)));
 
-            // Right bright yellow light
+            // Right bright cyan light
             this.lights.Add(
                 new DirectionalLight(
                     new Vector3(37.5f, 101f, -112.5f),
                     new Vector3(0f, 26f, -150f),
                     1.0f,
-                    new Vector3(1.0f, 1.0f, 0.0f)));
+                    new Vector3(0.0f, 1.0f, 1.0f)));
 
             Vector3 corner1 = new Vector3(-1f, 42f, -151f); // Top-left
             Vector3 corner2 = new Vector3(1f, 42f, -151f);  // Top-right
