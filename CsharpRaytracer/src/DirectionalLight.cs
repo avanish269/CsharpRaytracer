@@ -28,17 +28,18 @@ namespace CsharpRaytracer
         {
             Vector3 lightDirection = this.DirectionFromPoint;
             float distanceFromLight = Vector3.Distance(this.Source, intersectionInfo.IntersectionPoint);
+            float attenuatedIntensity = this.GetAttenuatedIntensity(distanceFromLight);
 
             float NdotL = Vector3.Dot(intersectionInfo.NormalAtIntersection, lightDirection);
             float lambertianTerm = MathF.Max(0.0f, NdotL);
 
-            Vector3 diffuseColor = (this.GetAttenuatedIntensity(distanceFromLight) * lambertianTerm) * (intersectionInfo.Material.DiffuseCoefficient * this.Color);
+            Vector3 diffuseColor = (attenuatedIntensity * lambertianTerm) * (intersectionInfo.Material.DiffuseCoefficient * this.Color);
 
             Vector3 halfVector = Vector3.Normalize(lightDirection - rayDirection);
             float NdotH = Vector3.Dot(intersectionInfo.NormalAtIntersection, halfVector);
             float specularTerm = MathF.Max(0.0f, NdotH);
 
-            Vector3 specularColor = (this.GetAttenuatedIntensity(distanceFromLight) * MathF.Pow(specularTerm, intersectionInfo.Material.SpecularExponent)) * (intersectionInfo.Material.SpecularCoefficient * this.Color);
+            Vector3 specularColor = (attenuatedIntensity * MathF.Pow(specularTerm, intersectionInfo.Material.SpecularExponent)) * (intersectionInfo.Material.SpecularCoefficient * this.Color);
 
             return (diffuseColor, specularColor);
         }

@@ -48,19 +48,21 @@ namespace CsharpRaytracer
 
         public override (Vector3 DiffuseColor, Vector3 SpecularColor) GetDiffuseAndSpecularColor(Vector3 rayOrigin, Vector3 rayDirection, IntersectionInfo intersectionInfo, Vector3 sampledPointOnLightSurface)
         {
-            Vector3 lightDirection = Vector3.Normalize(sampledPointOnLightSurface - intersectionInfo.IntersectionPoint);
-            float distanceFromLight = Vector3.Distance(sampledPointOnLightSurface, intersectionInfo.IntersectionPoint);
+            Vector3 lightDirection = sampledPointOnLightSurface - intersectionInfo.IntersectionPoint;
+            float distanceFromLight = lightDirection.Length();
+            lightDirection = Vector3.Normalize(lightDirection);
+            float attenuatedIntensity = this.GetAttenuatedIntensity(distanceFromLight);
 
             float NdotL = Vector3.Dot(intersectionInfo.NormalAtIntersection, lightDirection);
             float lambertianTerm = MathF.Max(0.0f, NdotL);
 
-            Vector3 diffuseColor = (this.GetAttenuatedIntensity(distanceFromLight) * lambertianTerm) * (intersectionInfo.Material.DiffuseCoefficient * this.Color);
+            Vector3 diffuseColor = (attenuatedIntensity * lambertianTerm) * (intersectionInfo.Material.DiffuseCoefficient * this.Color);
 
             Vector3 halfVector = Vector3.Normalize(lightDirection - rayDirection);
             float NdotH = Vector3.Dot(intersectionInfo.NormalAtIntersection, halfVector);
             float specularTerm = MathF.Max(0.0f, NdotH);
 
-            Vector3 specularColor = (this.GetAttenuatedIntensity(distanceFromLight) * MathF.Pow(specularTerm, intersectionInfo.Material.SpecularExponent)) * (intersectionInfo.Material.SpecularCoefficient * this.Color);
+            Vector3 specularColor = (attenuatedIntensity * MathF.Pow(specularTerm, intersectionInfo.Material.SpecularExponent)) * (intersectionInfo.Material.SpecularCoefficient * this.Color);
 
             return (diffuseColor, specularColor);
         }
