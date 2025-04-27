@@ -53,7 +53,7 @@ namespace CsharpRaytracer
 
     internal static class Program
     {
-        static void Render(byte[] data, int height, int width)
+        static void Render(byte[] data, int height, int width, Scene scene, Camera camera)
         {
             ParallelOptions parallelOptions = new ParallelOptions
             {
@@ -62,12 +62,21 @@ namespace CsharpRaytracer
 
             Parallel.For(0, height, parallelOptions, j =>
             {
+                int rowOffset = (height - j - 1) * width;
+
                 for (int i = 0; i < width; i++)
                 {
-                    Vector3 color = Vector3.One * 255;
+                    camera.GetRayAtPixel(i, j, out Vector3 rayOrigin, out Vector3 rayDirection);
+
+                    Vector3 color = scene.RayCast(rayOrigin, rayDirection, depth: 0);
+
+                    color = color.ApplyReinhardToneMapping();
+                    color = color.FastGammaCorrect();
+
+                    color *= 255.0f; // Scale color to 0-255 range
 
                     // Calculate the position in framebuffer
-                    int pixelIndex = i + ((height - j - 1) * width);
+                    int pixelIndex = i + rowOffset;
 
                     // Write directly to data array (3 bytes per pixel)
                     int dataIndex = pixelIndex * 3;
@@ -81,6 +90,9 @@ namespace CsharpRaytracer
         static void Main(string[] args)
         {
             OpenGLDraw openGLDraw = new OpenGLDraw();
+
+            Scene scene = new Scene();
+            scene.CreateScene();
 
             var nativeWindowSettings = new NativeWindowSettings()
             {
@@ -145,7 +157,21 @@ namespace CsharpRaytracer
                 {
                     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-                    Render(data, window.Size.Y, window.Size.X);
+                    float fieldOfView = 45;
+                    float angle = 30 * MathF.PI / 180;
+                    Vector3 source = new Vector3(-120.0f, 32.0f + (150.0f * MathF.Sin(angle)), -150.0f * (1 - MathF.Cos(angle)));
+                    Vector3 destination = new Vector3(0, 32, -150);
+                    Vector3 cameraUp = new Vector3(0, 1, 0);
+                    Camera camera = new Camera(
+                        source,
+                        destination,
+                        cameraUp,
+                        fieldOfView,
+                        window.Size.Y,
+                        window.Size.X
+                    );
+
+                    Render(data, window.Size.Y, window.Size.X, scene, camera);
 
                     // Draw to screen
                     openGLDraw.Draw(data, window.Size.X, window.Size.Y, 0, 0);
