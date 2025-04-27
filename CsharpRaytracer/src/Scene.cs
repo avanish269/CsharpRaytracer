@@ -23,18 +23,86 @@ namespace CsharpRaytracer
 
         public void CreateScene()
         {
+            Material white = new Material(
+                new Vector3(1.0f, 1.0f, 1.0f),  // White color for diffuse reflection (albedo of the floor)
+                new Vector3(1.0f, 1.0f, 1.0f),  // Full specular reflection (reflectance of water)
+                new Vector3(0.0f, 0.0f, 0.0f),  // No ambient reflection
+                1000f,  // Mirror-like surface, high specular exponent (water-like)
+                1.0f,  // Full reflectivity
+                0.0f,  // No transmission (solid, opaque)
+                1.33f);  // Refractive index of water
+
+            Material darkBrown = new Material(
+                new Vector3(0.396f, 0.263f, 0.129f),  // Dark brown color for diffuse reflection
+                new Vector3(0.396f, 0.263f, 0.129f),  // Same color for specular reflection
+                new Vector3(0.0f, 0.0f, 0.0f),  // No ambient reflection
+                10f,  // Moderate shininess
+                0.35f,  // 35% of light is reflected
+                0.65f,  // 65% of light passes through
+                1.52f);  // Refractive index of glass
+
+            Material silver = new Material(
+                new Vector3(0.50754f, 0.50754f, 0.50754f),  // Silver diffuse color
+                new Vector3(0.508273f, 0.508273f, 0.508273f),  // Silver specular reflection
+                new Vector3(0.19225f, 0.19225f, 0.19225f),  // No ambient reflection
+                1000f,  // Highly reflective like polished silver
+                0.9f,  // 90% of light is reflected
+                0.0f,  // No transmission (solid)
+                1.0f);  // Same as air, as it’s a solid object
+
             Material gold = new Material(
-                new Vector3(0.75164f, 0.60648f, 0.22648f),  // Gold color for diffuse reflection  
-                new Vector3(0.628281f, 0.555802f, 0.366065f),  // Gold-like specular reflection  
-                new Vector3(0.24725f, 0.19950f, 0.07450f),  // Gold ambient reflection color  
-                51.2f,  // High reflectivity like gold  
-                0.9f,  // 90% of light is reflected  
-                0.0f,  // No transmission  
-                1.0f);  // Same as air, solid object  
+                new Vector3(0.75164f, 0.60648f, 0.22648f),  // Gold color for diffuse reflection
+                new Vector3(0.628281f, 0.555802f, 0.366065f),  // Gold-like specular reflection
+                new Vector3(0.24725f, 0.19950f, 0.07450f),  // Gold ambient reflection color
+                51.2f,  // High reflectivity like gold
+                0.9f,  // 90% of light is reflected
+                0.0f,  // No transmission
+                1.0f);  // Same as air, solid object
+
+            Material glass = new Material(
+                new Vector3(0.6588f, 0.8f, 0.8431f),  // Light blue color for the glass
+                new Vector3(0.9f, 0.9f, 0.9f),  // High specular reflection (shiny glass)
+                new Vector3(0.0f, 0.0f, 0.0f),  // No ambient reflection
+                96.0f,  // Highly shiny glass
+                0.35f,  // 35% of light is reflected
+                0.65f,  // 65% of light passes through
+                1.333f);  // Refractive index of glass
+
+            // Left bright yellow light
+            this.lights.Add(
+                new DirectionalLight(
+                    new Vector3(-37.5f, 101f, -187.5f),
+                    new Vector3(0f, 26f, -150f),
+                    1.0f,
+                    new Vector3(1.0f, 1.0f, 0.0f)));
+
+            // Top bright cyan light
+            this.lights.Add(
+                new DirectionalLight(
+                    new Vector3(37.5f, 101f, -187.5f),
+                    new Vector3(0f, 26f, -150f),
+                    1.0f,
+                    new Vector3(0.0f, 1.0f, 1.0f)));
+
+            // Bottom bright cyan light
+            this.lights.Add(
+                new DirectionalLight(
+                    new Vector3(-37.5f, 101f, -112.5f),
+                    new Vector3(0f, 26f, -150f),
+                    1.0f,
+                    new Vector3(0.0f, 1.0f, 1.0f)));
+
+            // Right bright yellow light
+            this.lights.Add(
+                new DirectionalLight(
+                    new Vector3(37.5f, 101f, -112.5f),
+                    new Vector3(0f, 26f, -150f),
+                    1.0f,
+                    new Vector3(1.0f, 1.0f, 0.0f)));
 
             this.sceneObjects.Add(new Sphere(new Vector3(0f, 32f, -150f), 5f, gold));
 
-            this.lights.Add(new PointLight(new Vector3(0f, 42f, -150f), 1.0f, 0.0f, 1.0f, 2.0f, new Vector3(0f, 1f, 1f)));
+            this.sceneObjects.Add(new Sphere(new Vector3(0f, 38f, -150f), 1f, gold));
         }
 
         public bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
@@ -82,19 +150,20 @@ namespace CsharpRaytracer
                 Vector3 specularIlluminance = Vector3.Zero;
                 Vector3 totalIlluminance = Vector3.Zero;
 
+                float offset = Constants.Offset + intersectionInfo.SceneObject.Thickness;
+                Vector3 shadowRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
+
                 foreach (Light light in  this.lights)
                 {
-                    (Vector3 shadowRayOrigin, Vector3 shadowRayDirection) = light.GetShadowRay(intersectionInfo);
+                    Vector3 shadowRayDirection = light.GetShadowRayDirection(shadowRayOrigin);
+                    (Vector3 diffuseColor, Vector3 specularColor) = light.GetDiffuseAndSpecularColor(rayOrigin, rayDirection, intersectionInfo);
+
                     if (this.CheckIntersection(shadowRayOrigin, shadowRayDirection))
                     {
-                        continue; // Skip shading if the shadow ray intersects with any object
-
-                        //TODO: if shadowIntersection is not None and shadowIntersection.object != light:
-                        // Apply shadow (reduce light intensity)
-                        //color *= (1 - SHADOW_INTENSITY)
+                        diffuseColor *= (1 - Constants.ShadowIntensity);
+                        specularColor *= (1 - Constants.ShadowIntensity);
                     }
 
-                    (Vector3 diffuseColor, Vector3 specularColor) = light.GetDiffuseAndSpecularColor(rayOrigin, rayDirection, intersectionInfo);
                     diffuseIlluminance += diffuseColor;
                     specularIlluminance += specularColor;
                 }

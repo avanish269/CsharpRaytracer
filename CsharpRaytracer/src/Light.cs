@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace CsharpRaytracer
 {
@@ -28,7 +29,17 @@ namespace CsharpRaytracer
             this.Color = color;
         }
 
-        public abstract (Vector3 shadowRayOrigin, Vector3 shadowRayDirection) GetShadowRay(IntersectionInfo intersectionInfo);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected float GetAttenuatedIntensity(float distance)
+        {
+            float attenuation = this.ConstantAttenuation +
+                (this.LinearAttenuation * distance) +
+                (this.QuadraticAttenuation * distance * distance);
+
+            return this.Intensity / attenuation;
+        }
+
+        public abstract Vector3 GetShadowRayDirection(Vector3 pointFrom);
 
         public abstract (Vector3 DiffuseColor, Vector3 SpecularColor) GetDiffuseAndSpecularColor(Vector3 rayOrigin, Vector3 rayDirection, IntersectionInfo intersectionInfo);
     }

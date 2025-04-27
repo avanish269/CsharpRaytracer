@@ -3,37 +3,30 @@ using System.Numerics;
 
 namespace CsharpRaytracer
 {
-    public class PointLight : Light
+    public class DirectionalLight : Light
     {
         private Vector3 Source;
 
-        public PointLight(
-            Vector3 source,
-            float constantAttenuation,
-            float linearAttenuation,
-            float quadraticAttenuation,
-            float intensity,
-            Vector3 color)
-            : base(constantAttenuation,
-                linearAttenuation,
-                quadraticAttenuation,
-                intensity,
-                color)
+        private Vector3 Direction;
+
+        private Vector3 DirectionFromPoint;
+
+        public DirectionalLight(Vector3 source, Vector3 destination, float intensity, Vector3 color)
+            : base(constantAttenuation: 1, linearAttenuation: 0, quadraticAttenuation: 0, intensity: intensity, color: color)
         {
             this.Source = source;
-            this.ConstantAttenuation = constantAttenuation;
-            this.LinearAttenuation = linearAttenuation;
-            this.QuadraticAttenuation = quadraticAttenuation;
+            this.Direction = Vector3.Normalize(destination - source);
+            this.DirectionFromPoint = Vector3.Normalize(source - destination);
         }
 
         public override Vector3 GetShadowRayDirection(Vector3 pointFrom)
         {
-            return Vector3.Normalize(this.Source - pointFrom);
+            return this.DirectionFromPoint;
         }
 
         public override (Vector3 DiffuseColor, Vector3 SpecularColor) GetDiffuseAndSpecularColor(Vector3 rayOrigin, Vector3 rayDirection, IntersectionInfo intersectionInfo)
         {
-            Vector3 lightDirection = Vector3.Normalize(this.Source - intersectionInfo.IntersectionPoint);
+            Vector3 lightDirection = this.DirectionFromPoint;
             float distanceFromLight = Vector3.Distance(this.Source, intersectionInfo.IntersectionPoint);
 
             float NdotL = Vector3.Dot(intersectionInfo.NormalAtIntersection, lightDirection);
