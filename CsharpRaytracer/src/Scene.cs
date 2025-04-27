@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Numerics;
 
 namespace CsharpRaytracer
@@ -13,11 +11,14 @@ namespace CsharpRaytracer
 
         private readonly List<Light> lights;
 
+        private readonly List<AreaLight> areaLights;
+
         public Scene()
         {
             this.ambientColor = new Vector3(0.005f, 0.005f, 0.005f);
             this.sceneObjects = new List<SceneObject>();
             this.lights = new List<Light>();
+            this.areaLights = new List<AreaLight>();
             this.CreateScene();
         }
 
@@ -100,6 +101,22 @@ namespace CsharpRaytracer
                     1.0f,
                     new Vector3(1.0f, 1.0f, 0.0f)));
 
+            Vector3 corner1 = new Vector3(-1f, 42f, -151f); // Top-left
+            Vector3 corner2 = new Vector3(1f, 42f, -151f);  // Top-right
+            Vector3 corner3 = new Vector3(-1f, 42f, -149f); // Bottom-left
+
+            // Center bright white light
+            this.areaLights.Add(
+                new RectangleAreaLight(
+                    corner1,
+                    corner2,
+                    corner3,
+                    1.0f,
+                    0.0f,
+                    1.0f,
+                    1.0f,
+                    new Vector3(1.0f, 1.0f, 1.0f)));
+
             this.sceneObjects.Add(new Sphere(new Vector3(0f, 32f, -150f), 5f, gold));
 
             this.sceneObjects.Add(new Sphere(new Vector3(0f, 38f, -150f), 1f, gold));
@@ -153,7 +170,7 @@ namespace CsharpRaytracer
                 float offset = Constants.Offset + intersectionInfo.SceneObject.Thickness;
                 Vector3 shadowRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
 
-                foreach (Light light in  this.lights)
+                foreach (Light light in this.lights)
                 {
                     Vector3 shadowRayDirection = light.GetShadowRayDirection(shadowRayOrigin);
                     (Vector3 diffuseColor, Vector3 specularColor) = light.GetDiffuseAndSpecularColor(rayOrigin, rayDirection, intersectionInfo);
@@ -166,6 +183,29 @@ namespace CsharpRaytracer
 
                     diffuseIlluminance += diffuseColor;
                     specularIlluminance += specularColor;
+                }
+
+                foreach (AreaLight areaLight in this.areaLights)
+                {
+                    Vector3 sampleDiffuseColor = Vector3.Zero;
+                    Vector3 sampleSpecularColor = Vector3.Zero;
+                    for (int i = 0; i < Constants.NumberOfSamplesForAreaLight; i++)
+                    {
+                        Vector3 sampledPointOnLightSurface = areaLight.SampleRandomPoint();
+                        Vector3 shadowRayDirection = areaLight.GetShadowRayDirection(shadowRayOrigin, sampledPointOnLightSurface);
+                        (Vector3 diffuseColor, Vector3 specularColor) = areaLight.GetDiffuseAndSpecularColor(rayOrigin, rayDirection, intersectionInfo, sampledPointOnLightSurface);
+
+                        if (this.CheckIntersection(shadowRayOrigin, shadowRayDirection))
+                        {
+                            diffuseColor *= (1 - Constants.ShadowIntensity);
+                            specularColor *= (1 - Constants.ShadowIntensity);
+                        }
+
+                        sampleDiffuseColor += diffuseColor;
+                        sampleSpecularColor += specularColor;
+                    }
+                    diffuseIlluminance += sampleDiffuseColor / Constants.NumberOfSamplesForAreaLight;
+                    specularIlluminance += sampleSpecularColor / Constants.NumberOfSamplesForAreaLight;
                 }
 
                 totalIlluminance += ambientIlluminance;
