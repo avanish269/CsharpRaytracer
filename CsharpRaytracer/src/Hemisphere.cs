@@ -39,41 +39,48 @@ namespace CsharpRaytracer
                 1,
                 out IntersectionInfo outerInfo);
 
-            if (this.Thickness == 0.0f)
+            bool innerHit = false;
+            IntersectionInfo innerInfo = null;
+            if (this.Thickness > 0.0f)
             {
-                intersectionInfo = outerInfo;
-                return outerHit;
+                innerHit = this.CheckIntersectionForSphere(
+                    rayOrigin,
+                    rayDirection,
+                    this.InnerRadius,
+                    1,
+                    out innerInfo);
+
+                if (innerHit)
+                    innerInfo.NormalAtIntersection = Vector3.Negate(innerInfo.NormalAtIntersection);
             }
 
-            // Check intersection with the inner sphere
-            bool innerHit = this.CheckIntersectionForSphere(
+            bool planeHit = this.CheckIntersectionWithPlane(
                 rayOrigin,
                 rayDirection,
-                this.InnerRadius,
-                1,
-                out IntersectionInfo innerInfo);
+                out IntersectionInfo planeInfo);
 
-            if (!outerHit && !innerHit)
-                return false;
-
-            if (innerHit)
-                innerInfo.NormalAtIntersection = Vector3.Negate(innerInfo.NormalAtIntersection);
-
-            if (outerHit && (!innerHit || outerInfo.TForIntersection < innerInfo.TForIntersection))
+            if (outerHit && (!innerHit || (outerInfo.TForIntersection < planeInfo.TForIntersection && outerInfo.TForIntersection < innerInfo.TForIntersection)))
             {
                 intersectionInfo = outerInfo;
             }
-            else if (innerHit)
+            else if (innerHit && innerInfo.TForIntersection < planeInfo.TForIntersection)
             {
                 intersectionInfo = innerInfo;
             }
+            else if (planeHit)
+            {
+                intersectionInfo = planeInfo;
+            }
+
+            if (intersectionInfo == null)
+                return false;
 
             return true;
         }
 
         private bool CheckIntersectionForSphere(Vector3 rayOrigin, Vector3 rayDirection, float r, int clipSign, out IntersectionInfo info)
         {
-            info = null;
+            info = new IntersectionInfo();
             Vector3 oc = rayOrigin - this.Center;
             float a = Vector3.Dot(rayDirection, rayDirection);
             float b = 2.0f * Vector3.Dot(oc, rayDirection);
@@ -113,6 +120,44 @@ namespace CsharpRaytracer
             }
 
             return false;
+        }
+
+        // Ray-plane intersection logic for the flat circular face (the open side of the hemisphere)
+        private bool CheckIntersectionWithPlane(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
+        {
+            intersectionInfo = new IntersectionInfo();
+
+            // We assume the plane equation is (P - Center) · Normal = 0
+            float denominator = Vector3.Dot(rayDirection, this.Normal);
+
+            if (MathF.Abs(denominator) < Constants.Epsilon)
+                return false;
+
+            float numerator = Vector3.Dot(this.Center - rayOrigin, this.Normal);
+
+            float t = numerator / denominator;
+
+            if (t < 0)
+                return false;
+
+            Vector3 intersectionPoint = rayOrigin + (t * rayDirection);
+
+            // Check if the intersection point is within the bounds of the flat circle (hemisphere opening)
+            float distFromCenter = Vector3.Distance(intersectionPoint, this.Center);
+
+            if (distFromCenter > this.OuterRadius || (distFromCenter < this.InnerRadius && this.Thickness > Constants.Epsilon))
+            {
+                return false;
+            }
+
+            Vector3 normal = this.Normal;
+            if (Vector3.Dot(normal, rayDirection) > 0)
+            {
+                normal = Vector3.Negate(normal);
+            }
+
+            intersectionInfo = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);
+            return true;
         }
     }
 }
