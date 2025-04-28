@@ -319,6 +319,12 @@ namespace CsharpRaytracer
                         Vector3 refractedRayOrigin = intersectionInfo.IntersectionPoint - (intersectionInfo.NormalAtIntersection * offset);
                         totalIlluminance += intersectionInfo.Material.Transparency * this.RayCast(refractedRayOrigin, refractedRayDirection, depth + 1);
                     }
+                    else
+                    {
+                        Vector3 reflectedRayDirection = rayDirection - (2 * Vector3.Dot(rayDirection, intersectionInfo.NormalAtIntersection) * intersectionInfo.NormalAtIntersection);
+                        Vector3 reflectedRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
+                        totalIlluminance += intersectionInfo.Material.Transparency * this.RayCast(reflectedRayOrigin, reflectedRayDirection, depth + 1);
+                    }
                 }
 
                 return totalIlluminance;
