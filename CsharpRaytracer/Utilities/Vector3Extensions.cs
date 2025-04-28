@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Utilities
 {
     public static class Vector3Extensions
     {

@@ -1,10 +1,10 @@
-﻿using OpenTK.Graphics.ES11;
+﻿using CsharpRaytracer.Core;
+using CsharpRaytracer.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Geometry
 {
     public class Cylinder : SceneObject
     {
@@ -129,7 +129,7 @@ namespace CsharpRaytracer
                 return false;
 
             float sqrtDiscriminant = MathF.Sqrt(discriminant);
-            float q = (b < 0.0f) ? (b - sqrtDiscriminant) * -0.5f : (b + sqrtDiscriminant) * -0.5f;
+            float q = b < 0.0f ? (b - sqrtDiscriminant) * -0.5f : (b + sqrtDiscriminant) * -0.5f;
 
             float t0 = q / a;
             float t1 = c / q;
@@ -139,7 +139,7 @@ namespace CsharpRaytracer
                 (t0, t1) = (t1, t0);
             }
 
-            foreach(float t in new[] { t0, t1 })
+            foreach (float t in new[] { t0, t1 })
             {
                 if (t <= 0.0f)
                     continue;

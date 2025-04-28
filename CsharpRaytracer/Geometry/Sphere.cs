@@ -1,7 +1,8 @@
-﻿using System;
+﻿using CsharpRaytracer.Core;
+using System;
 using System.Numerics;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Geometry
 {
     public class Sphere : SceneObject
     {
@@ -27,7 +28,7 @@ namespace CsharpRaytracer
             if (discriminant < 0)
                 return false;
             float sqrtDiscriminant = MathF.Sqrt(discriminant);
-            float q = (b < 0.0f) ? (b - sqrtDiscriminant) * -0.5f : (b + sqrtDiscriminant) * -0.5f;
+            float q = b < 0.0f ? (b - sqrtDiscriminant) * -0.5f : (b + sqrtDiscriminant) * -0.5f;
 
             float t0 = q / a;
             float t1 = c / q;

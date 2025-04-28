@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using System;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Core
 {
     public class OpenGLDraw
     {

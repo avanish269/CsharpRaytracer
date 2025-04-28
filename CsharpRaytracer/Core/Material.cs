@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Core
 {
     public record Material(
         Vector3 DiffuseCoefficient,

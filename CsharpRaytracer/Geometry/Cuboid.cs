@@ -1,10 +1,12 @@
-﻿using System;
+﻿using CsharpRaytracer.Core;
+using CsharpRaytracer.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Geometry
 {
     public class Cuboid : SceneObject
     {

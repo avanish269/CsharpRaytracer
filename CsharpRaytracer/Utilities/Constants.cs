@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Utilities
 {
     public static class Constants
     {

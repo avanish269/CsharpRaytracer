@@ -1,6 +1,7 @@
-﻿using System.Numerics;
+﻿using CsharpRaytracer.Core;
+using System.Numerics;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Geometry
 {
     public abstract class SceneObject
     {

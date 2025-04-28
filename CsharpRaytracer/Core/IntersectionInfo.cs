@@ -1,6 +1,7 @@
-﻿using System.Numerics;
+﻿using CsharpRaytracer.Geometry;
+using System.Numerics;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Core
 {
     public class IntersectionInfo
     {

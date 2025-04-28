@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Core
 {
     public class Camera
     {

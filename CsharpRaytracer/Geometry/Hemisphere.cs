@@ -1,8 +1,10 @@
-﻿using System;
+﻿using CsharpRaytracer.Core;
+using CsharpRaytracer.Utilities;
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Geometry
 {
     public class Hemisphere : SceneObject
     {
@@ -92,7 +94,7 @@ namespace CsharpRaytracer
             if (discriminant < 0)
                 return false;
             float sqrtDiscriminant = MathF.Sqrt(discriminant);
-            float q = (b < 0.0f) ? (b - sqrtDiscriminant) * -0.5f : (b + sqrtDiscriminant) * -0.5f;
+            float q = b < 0.0f ? (b - sqrtDiscriminant) * -0.5f : (b + sqrtDiscriminant) * -0.5f;
 
             float t0 = q / a;
             float t1 = c / q;
@@ -111,7 +113,7 @@ namespace CsharpRaytracer
                 Vector3 ic = intersectionPoint - this.Center;
                 float hemisphereDot = Vector3.Dot(ic, this.Normal);
 
-                bool isPointOnCorrectHemiphere = (clipSign > 0) ? (hemisphereDot >= 0.0f) : (hemisphereDot <= 0.0f);
+                bool isPointOnCorrectHemiphere = clipSign > 0 ? hemisphereDot >= 0.0f : hemisphereDot <= 0.0f;
 
                 if (isPointOnCorrectHemiphere)
                 {

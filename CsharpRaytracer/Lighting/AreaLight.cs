@@ -1,8 +1,9 @@
-﻿using System;
+﻿using CsharpRaytracer.Core;
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Lighting
 {
     public abstract class AreaLight
     {

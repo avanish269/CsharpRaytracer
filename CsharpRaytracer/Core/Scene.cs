@@ -1,8 +1,12 @@
-﻿using System;
+﻿using CsharpRaytracer.Geometry;
+using CsharpRaytracer.Lighting;
+using CsharpRaytracer.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Plane = CsharpRaytracer.Geometry.Plane;
 
-namespace CsharpRaytracer
+namespace CsharpRaytracer.Core
 {
     public class Scene
     {
