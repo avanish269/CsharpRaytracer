@@ -27,7 +27,7 @@ namespace CsharpRaytracer
 
         public override bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
         {
-            intersectionInfo = new IntersectionInfo();
+            intersectionInfo = null;
             float denominator = Vector3.Dot(rayDirection, this.Normal);
 
             if (MathF.Abs(denominator) < Constants.Epsilon)

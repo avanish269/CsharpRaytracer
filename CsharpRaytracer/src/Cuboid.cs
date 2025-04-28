@@ -123,7 +123,7 @@ namespace CsharpRaytracer
 
         public override bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
         {
-            intersectionInfo = new IntersectionInfo();
+            intersectionInfo = null;
 
             Matrix4x4.Invert(this.RotationMartrix, out Matrix4x4 invRotation);
             Vector3 localOrigin = Vector3.Transform(rayOrigin - this.Center, invRotation);
