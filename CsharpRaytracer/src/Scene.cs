@@ -68,7 +68,7 @@ namespace CsharpRaytracer
                 96.0f,  // Highly shiny glass
                 0.35f,  // 35% of light is reflected
                 0.65f,  // 65% of light passes through
-                1.333f);  // Refractive index of glass
+                1.52f);  // Refractive index of glass
 
             // Left bright yellow light
             this.lights.Add(
@@ -102,9 +102,9 @@ namespace CsharpRaytracer
                     1.0f,
                     new Vector3(0.0f, 1.0f, 1.0f)));
 
-            Vector3 corner1 = new Vector3(-1f, 40f, -151f); // Top-left
-            Vector3 corner2 = new Vector3(1f, 40f, -151f);  // Top-right
-            Vector3 corner3 = new Vector3(-1f, 40f, -149f); // Bottom-left
+            Vector3 corner1 = new Vector3(-1f, 36f, -151f); // Top-left
+            Vector3 corner2 = new Vector3(1f, 36f, -151f);  // Top-right
+            Vector3 corner3 = new Vector3(-1f, 36f, -149f); // Bottom-left
 
             // Center bright white light
             this.areaLights.Add(
@@ -127,11 +127,82 @@ namespace CsharpRaytracer
                     v: new Vector3(0, 0, 50),
                     white));
 
-            this.sceneObjects.Add(new Sphere(new Vector3(0f, 32f, -150f), 5f, gold));
+            // Tabletop
+            this.sceneObjects.Add(new Cuboid(
+                new Vector3(-37.5f, 25f, -187.5f),
+                new Vector3(-37.5f, 25f, -112.5f),
+                new Vector3(-37.5f, 26f, -187.5f),
+                new Vector3(-37.5f, 26f, -112.5f),
+                new Vector3(37.5f, 25f, -187.5f),
+                new Vector3(37.5f, 25f, -112.5f),
+                new Vector3(37.5f, 26f, -187.5f),
+                new Vector3(37.5f, 26f, -112.5f),
+                75f,
+                1f,
+                75f,
+                darkBrown));
 
-            this.sceneObjects.Add(new Sphere(new Vector3(0f, 38f, -150f), 1f, gold));
+            // Back left leg
+            this.sceneObjects.Add(new Cuboid(
+                new Vector3(-35.5f, 25.0f, -185.5f),
+                new Vector3(-37.5f, 25.0f, -185.5f),
+                new Vector3(-35.5f, -50.0f, -185.5f),
+                new Vector3(-37.5f, -50.0f, -185.5f),
+                new Vector3(-35.5f, 25.0f, -187.5f),
+                new Vector3(-37.5f, 25.0f, -187.5f),
+                new Vector3(-35.5f, -50.0f, -187.5f),
+                new Vector3(-37.5f, -50.0f, -187.5f),
+                2.0f,
+                75.0f,
+                2.0f,
+                darkBrown));
 
-            this.sceneObjects.Add(new Sphere(new Vector3(0f, 38f, -151f), 1f, gold));
+            // Back right leg
+            this.sceneObjects.Add(new Cuboid(
+                new Vector3(35.5f, 25.0f, -185.5f),
+                new Vector3(37.5f, 25.0f, -185.5f),
+                new Vector3(35.5f, -50.0f, -185.5f),
+                new Vector3(37.5f, -50.0f, -185.5f),
+                new Vector3(35.5f, 25.0f, -187.5f),
+                new Vector3(37.5f, 25.0f, -187.5f),
+                new Vector3(35.5f, -50.0f, -187.5f),
+                new Vector3(37.5f, -50.0f, -187.5f),
+                2.0f,
+                75.0f,
+                2.0f,
+                darkBrown));
+
+            // Front left leg
+            this.sceneObjects.Add(new Cuboid(
+                new Vector3(-35.5f, 25.0f, -112.5f),
+                new Vector3(-37.5f, 25.0f, -112.5f),
+                new Vector3(-35.5f, -50.0f, -112.5f),
+                new Vector3(-37.5f, -50.0f, -112.5f),
+                new Vector3(-35.5f, 25.0f, -114.5f),
+                new Vector3(-37.5f, 25.0f, -114.5f),
+                new Vector3(-35.5f, -50.0f, -114.5f),
+                new Vector3(-37.5f, -50.0f, -114.5f),
+                2.0f,
+                75.0f,
+                2.0f,
+                darkBrown));
+
+            // Front right leg
+            this.sceneObjects.Add(new Cuboid(
+                new Vector3(35.5f, 25.0f, -112.5f),
+                new Vector3(37.5f, 25.0f, -112.5f),
+                new Vector3(35.5f, -50.0f, -112.5f),
+                new Vector3(37.5f, -50.0f, -112.5f),
+                new Vector3(35.5f, 25.0f, -114.5f),
+                new Vector3(37.5f, 25.0f, -114.5f),
+                new Vector3(35.5f, -50.0f, -114.5f),
+                new Vector3(37.5f, -50.0f, -114.5f),
+                2.0f,
+                75.0f,
+                2.0f,
+                darkBrown));
+
+            this.sceneObjects.Add(new Sphere(new Vector3(0f, 32f, -150f), 2.5f, gold));
         }
 
         public bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
