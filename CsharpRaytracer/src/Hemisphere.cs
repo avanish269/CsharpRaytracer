@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace CsharpRaytracer
 {
@@ -78,6 +79,7 @@ namespace CsharpRaytracer
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool CheckIntersectionForSphere(Vector3 rayOrigin, Vector3 rayDirection, float r, int clipSign, out IntersectionInfo info)
         {
             info = new IntersectionInfo();
@@ -123,6 +125,7 @@ namespace CsharpRaytracer
         }
 
         // Ray-plane intersection logic for the flat circular face (the open side of the hemisphere)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool CheckIntersectionWithPlane(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
         {
             intersectionInfo = new IntersectionInfo();

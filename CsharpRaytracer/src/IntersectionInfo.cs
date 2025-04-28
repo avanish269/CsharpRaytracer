@@ -16,7 +16,7 @@ namespace CsharpRaytracer
 
         public IntersectionInfo()
         {
-            this.TForIntersection = float.MaxValue;
+            this.TForIntersection = float.PositiveInfinity;
             this.IntersectionPoint = Vector3.Zero;
             this.NormalAtIntersection = Vector3.Zero;
             this.Material = null;

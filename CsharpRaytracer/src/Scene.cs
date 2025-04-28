@@ -47,7 +47,7 @@ namespace CsharpRaytracer
                 new Vector3(0.50754f, 0.50754f, 0.50754f),  // Silver diffuse color
                 new Vector3(0.508273f, 0.508273f, 0.508273f),  // Silver specular reflection
                 new Vector3(0.19225f, 0.19225f, 0.19225f),  // No ambient reflection
-                1000f,  // Highly reflective like polished silver
+                51.2f,  // Highly reflective like polished silver
                 0.9f,  // 90% of light is reflected
                 0.0f,  // No transmission (solid)
                 1.0f);  // Same as air, as it’s a solid object
@@ -202,17 +202,63 @@ namespace CsharpRaytracer
                 2.0f,
                 darkBrown));
 
+            // Plate
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(0f, 26.5f, -150f),
+                    new Vector3(0f, 27.5f, -150f),
+                    10.0f,
+                    silver,
+                    0.0f));
+
+            // Bowl
             this.sceneObjects.Add(new Hemisphere(
                 new Vector3(0f, 32f, -150f),
                 new Vector3(0f, -1f, 0f),
                 5f,
                 gold,
                 0.25f));
+
+            // Front tumbler
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(0f, 26.5f, -137f),
+                    new Vector3(0f, 36.5f, -137f),
+                    3.0f,
+                    glass,
+                    0.25f));
+
+            // Back tumbler
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(0f, 26.5f, -163f),
+                    new Vector3(0f, 36.5f, -163f),
+                    3f,
+                    glass,
+                    0.25f));
+
+            // Left tumbler
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(-13f, 26.5f, -150f),
+                    new Vector3(-13f, 36.5f, -150f),
+                    3f,
+                    glass,
+                    0.25f));
+
+            // Right tumbler
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(13f, 26.5f, -150f),
+                    new Vector3(13f, 36.5f, -150f),
+                    3f,
+                    glass,
+                    0.25f));
         }
 
         public bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
         {
-            float nearestDist = float.MaxValue;
+            float nearestDist = float.PositiveInfinity;
             intersectionInfo = new IntersectionInfo();
             bool doesIntersect = false;
 
