@@ -261,7 +261,8 @@ namespace CsharpRaytracer
                 foreach (Light light in this.lights)
                 {
                     Vector3 shadowRayDirection = light.GetShadowRayDirection(shadowRayOrigin);
-                    (Vector3 diffuseColor, Vector3 specularColor) = light.GetDiffuseAndSpecularColor(rayOrigin, rayDirection, intersectionInfo);
+                    (Vector3 diffuseColor, Vector3 specularColor) = light.GetDiffuseAndSpecularColorBlinnPhongShading(rayOrigin, rayDirection, intersectionInfo);
+                    //(Vector3 diffuseColor, Vector3 specularColor) = light.GetDiffuseAndSpecularColorCelShading(rayOrigin, rayDirection, intersectionInfo);
 
                     if (this.CheckIntersection(shadowRayOrigin, shadowRayDirection))
                     {
@@ -281,7 +282,8 @@ namespace CsharpRaytracer
                     {
                         Vector3 sampledPointOnLightSurface = areaLight.SampleRandomPoint();
                         Vector3 shadowRayDirection = areaLight.GetShadowRayDirection(shadowRayOrigin, sampledPointOnLightSurface);
-                        (Vector3 diffuseColor, Vector3 specularColor) = areaLight.GetDiffuseAndSpecularColor(rayOrigin, rayDirection, intersectionInfo, sampledPointOnLightSurface);
+                        (Vector3 diffuseColor, Vector3 specularColor) = areaLight.GetDiffuseAndSpecularColorBlinnPhong(rayOrigin, rayDirection, intersectionInfo, sampledPointOnLightSurface);
+                        //(Vector3 diffuseColor, Vector3 specularColor) = areaLight.GetDiffuseAndSpecularColorCelShading(rayOrigin, rayDirection, intersectionInfo, sampledPointOnLightSurface);
 
                         if (this.CheckIntersection(shadowRayOrigin, shadowRayDirection))
                         {

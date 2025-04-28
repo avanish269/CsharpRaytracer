@@ -41,6 +41,8 @@ namespace CsharpRaytracer
 
         public abstract Vector3 GetShadowRayDirection(Vector3 pointFrom);
 
-        public abstract (Vector3 DiffuseColor, Vector3 SpecularColor) GetDiffuseAndSpecularColor(Vector3 rayOrigin, Vector3 rayDirection, IntersectionInfo intersectionInfo);
+        public abstract (Vector3 DiffuseColor, Vector3 SpecularColor) GetDiffuseAndSpecularColorBlinnPhongShading(Vector3 rayOrigin, Vector3 rayDirection, IntersectionInfo intersectionInfo);
+
+        public abstract (Vector3 DiffuseColor, Vector3 SpecularColor) GetDiffuseAndSpecularColorCelShading(Vector3 rayOrigin, Vector3 rayDirection, IntersectionInfo intersectionInfo);
     }
 }
