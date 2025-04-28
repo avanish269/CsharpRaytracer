@@ -51,6 +51,9 @@ namespace CsharpRaytracer
 
             Scene scene = new Scene();
 
+            float fieldOfView = 45.0f;
+            float angle = 30 * MathF.PI / 180;
+
             var nativeWindowSettings = new NativeWindowSettings()
             {
                 // WGA
@@ -114,8 +117,6 @@ namespace CsharpRaytracer
                 {
                     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-                    float fieldOfView = 45.0f;
-                    float angle = 30 * MathF.PI / 180;
                     Vector3 source = new Vector3(
                         -120.0f,
                         32.0f + (150.0f * MathF.Sin(angle)),

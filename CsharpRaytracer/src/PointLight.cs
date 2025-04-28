@@ -32,6 +32,7 @@ namespace CsharpRaytracer
             return Vector3.Normalize(this.Source - pointFrom);
         }
 
+        // TODO: FresnelSchlick approximation
         public override (Vector3 DiffuseColor, Vector3 SpecularColor) GetDiffuseAndSpecularColorBlinnPhongShading(Vector3 rayOrigin, Vector3 rayDirection, IntersectionInfo intersectionInfo)
         {
             Vector3 lightDirection = Vector3.Normalize(this.Source - intersectionInfo.IntersectionPoint);
