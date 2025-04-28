@@ -115,6 +115,46 @@ namespace CsharpRaytracer
                 Transparency: 0.92f,
                 RefractiveIndex: 1.5f);
 
+            var colorlessWater = new Material(
+                DiffuseCoefficient: new Vector3(0.0f, 0.0f, 0.0f),  // No diffuse reflection for colorless water
+                SpecularCoefficient: new Vector3(0.02f, 0.02f, 0.02f),  // Reflectivity based on F₀
+                AmbientCoefficient: new Vector3(0.02f, 0.02f, 0.02f),  // Slight ambient reflection
+                SpecularExponent: 150f,  // Sharper specular reflection (for smoother appearance)
+                Reflectivity: 0.05f,  // Slightly increased reflectivity
+                Transparency: 0.95f,  // High transparency
+                RefractiveIndex: 1.33f  // Water refractive index
+            );
+
+            var wineRedWater = new Material(
+                DiffuseCoefficient: new Vector3(0.5f, 0.0f, 0.0f),  // Wine-red hue for diffuse reflection
+                SpecularCoefficient: new Vector3(0.02f, 0.02f, 0.02f),  // Reflectivity based on F₀
+                AmbientCoefficient: new Vector3(0.02f, 0.02f, 0.02f),  // Slight ambient reflection
+                SpecularExponent: 150f,  // Sharper specular reflection (for smoother appearance)
+                Reflectivity: 0.05f,  // Slightly increased reflectivity
+                Transparency: 0.95f,  // High transparency
+                RefractiveIndex: 1.33f  // Water refractive index
+            );
+
+            var brightOrangeWater = new Material(
+                DiffuseCoefficient: new Vector3(1.0f, 0.5f, 0.0f),  // Bright-orange hue for diffuse reflection
+                SpecularCoefficient: new Vector3(0.02f, 0.02f, 0.02f),  // Reflectivity based on F₀
+                AmbientCoefficient: new Vector3(0.02f, 0.02f, 0.02f),  // Slight ambient reflection
+                SpecularExponent: 150f,  // Sharper specular reflection (for smoother appearance)
+                Reflectivity: 0.05f,  // Slightly increased reflectivity
+                Transparency: 0.95f,  // High transparency
+                RefractiveIndex: 1.33f  // Water refractive index
+            );
+
+            var lemonYellowWater = new Material(
+                DiffuseCoefficient: new Vector3(1.0f, 1.0f, 0.0f),  // Lemon-yellow hue for diffuse reflection
+                SpecularCoefficient: new Vector3(0.02f, 0.02f, 0.02f),  // Reflectivity based on F₀
+                AmbientCoefficient: new Vector3(0.02f, 0.02f, 0.02f),  // Slight ambient reflection
+                SpecularExponent: 150f,  // Sharper specular reflection (for smoother appearance)
+                Reflectivity: 0.05f,  // Slightly increased reflectivity
+                Transparency: 0.95f,  // High transparency
+                RefractiveIndex: 1.33f  // Water refractive index
+            );
+
             // Left bright yellow light
             this.lights.Add(
                 new DirectionalLight(
@@ -170,7 +210,7 @@ namespace CsharpRaytracer
                     new Vector3(0.0f, 1.0f, 0.0f),
                     u: new Vector3(50, 0, 0),
                     v: new Vector3(0, 0, 50),
-                    wetWhiteFloor));
+                    white));
 
             // Tabletop
             this.sceneObjects.Add(new Cuboid(
@@ -185,7 +225,7 @@ namespace CsharpRaytracer
                 75f,
                 1f,
                 75f,
-                solidDarkBrownGlass));
+                darkBrown));
 
             // Back left leg
             this.sceneObjects.Add(new Cuboid(
@@ -200,7 +240,7 @@ namespace CsharpRaytracer
                 2.0f,
                 75.0f,
                 2.0f,
-                solidDarkBrownGlass));
+                darkBrown));
 
             // Back right leg
             this.sceneObjects.Add(new Cuboid(
@@ -215,7 +255,7 @@ namespace CsharpRaytracer
                 2.0f,
                 75.0f,
                 2.0f,
-                solidDarkBrownGlass));
+                darkBrown));
 
             // Front left leg
             this.sceneObjects.Add(new Cuboid(
@@ -230,7 +270,7 @@ namespace CsharpRaytracer
                 2.0f,
                 75.0f,
                 2.0f,
-                solidDarkBrownGlass));
+                darkBrown));
 
             // Front right leg
             this.sceneObjects.Add(new Cuboid(
@@ -245,7 +285,7 @@ namespace CsharpRaytracer
                 2.0f,
                 75.0f,
                 2.0f,
-                solidDarkBrownGlass));
+                darkBrown));
 
             // Plate
             this.sceneObjects.Add(
@@ -253,7 +293,7 @@ namespace CsharpRaytracer
                     new Vector3(0f, 26.5f, -150f),
                     new Vector3(0f, 27.5f, -150f),
                     10.0f,
-                    silverPlate,
+                    silver,
                     0.0f));
 
             // Bowl
@@ -261,7 +301,7 @@ namespace CsharpRaytracer
                 new Vector3(0f, 32f, -150f),
                 new Vector3(0f, -1f, 0f),
                 5f,
-                goldBowl,
+                gold,
                 0.25f));
 
             // Front tumbler
@@ -270,7 +310,7 @@ namespace CsharpRaytracer
                     new Vector3(0f, 26.5f, -137f),
                     new Vector3(0f, 36.5f, -137f),
                     3.0f,
-                    colorlessGlass,
+                    glass,
                     0.25f));
 
             // Back tumbler
@@ -279,7 +319,7 @@ namespace CsharpRaytracer
                     new Vector3(0f, 26.5f, -163f),
                     new Vector3(0f, 36.5f, -163f),
                     3f,
-                    colorlessGlass,
+                    glass,
                     0.25f));
 
             // Left tumbler
@@ -288,7 +328,7 @@ namespace CsharpRaytracer
                     new Vector3(-13f, 26.5f, -150f),
                     new Vector3(-13f, 36.5f, -150f),
                     3f,
-                    colorlessGlass,
+                    glass,
                     0.25f));
 
             // Right tumbler
@@ -297,7 +337,7 @@ namespace CsharpRaytracer
                     new Vector3(13f, 26.5f, -150f),
                     new Vector3(13f, 36.5f, -150f),
                     3f,
-                    colorlessGlass,
+                    glass,
                     0.25f));
         }
 
