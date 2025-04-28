@@ -202,7 +202,12 @@ namespace CsharpRaytracer
                 2.0f,
                 darkBrown));
 
-            this.sceneObjects.Add(new Sphere(new Vector3(0f, 32f, -150f), 2.5f, gold));
+            this.sceneObjects.Add(new Hemisphere(
+                new Vector3(0f, 32f, -150f),
+                new Vector3(0f, -1f, 0f),
+                5f,
+                gold,
+                0.25f));
         }
 
         public bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
