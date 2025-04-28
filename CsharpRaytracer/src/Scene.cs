@@ -53,12 +53,12 @@ namespace CsharpRaytracer
                 1.52f);  // Refractive index of glass
 
             Material solidDarkBrownGlass = new Material(
-                DiffuseCoefficient: new Vector3(0.2f, 0.1f, 0.05f) * 0.35f,
+                DiffuseCoefficient: new Vector3(0.2f, 0.1f, 0.05f),
                 SpecularCoefficient: new Vector3(0.08f, 0.08f, 0.08f),
                 AmbientCoefficient: new Vector3(0.02f, 0.01f, 0.005f),
                 SpecularExponent: 300f,
                 Reflectivity: 0.08f,    // ~8% reflection at normal incidence (glass-like)
-                Transparency: 0.65f,    // 1 - Reflectivity
+                Transparency: 0.92f,    // 1 - Reflectivity
                 RefractiveIndex: 1.5f);
 
             Material silver = new Material(
@@ -71,11 +71,11 @@ namespace CsharpRaytracer
                 1.0f);  // Same as air, as it’s a solid object
 
             Material silverPlate = new Material(
-                DiffuseCoefficient: new Vector3(0.02f, 0.02f, 0.02f) * 0.45f,
-                SpecularCoefficient: new Vector3(0.95f, 0.93f, 0.88f) * 0.45f,
+                DiffuseCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
+                SpecularCoefficient: new Vector3(0.95f, 0.93f, 0.88f),
                 AmbientCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
                 SpecularExponent: 400f,
-                Reflectivity: 0.9f,
+                Reflectivity: 0.95f,
                 Transparency: 0.0f,
                 RefractiveIndex: 0.0f);
 
@@ -89,11 +89,11 @@ namespace CsharpRaytracer
                 1.0f);  // Same as air, solid object
 
             Material goldBowl = new Material(
-                DiffuseCoefficient: new Vector3(0.75f, 0.61f, 0.23f) * 0.45f,
-                SpecularCoefficient: new Vector3(1.0f, 0.71f, 0.29f) * 0.45f,
+                DiffuseCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
+                SpecularCoefficient: new Vector3(1.0f, 0.71f, 0.29f),
                 AmbientCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
                 SpecularExponent: 300f,
-                Reflectivity: 0.9f,
+                Reflectivity: 1.0f,
                 Transparency: 0.0f,
                 RefractiveIndex: 0.0f);
 
@@ -107,12 +107,12 @@ namespace CsharpRaytracer
                 1.52f);  // Refractive index of glass
 
             Material colorlessGlass = new Material(
-                DiffuseCoefficient: new Vector3(0.02f, 0.02f, 0.02f) * 0.35f,
+                DiffuseCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
                 SpecularCoefficient: new Vector3(0.08f, 0.08f, 0.08f),
                 AmbientCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
                 SpecularExponent: 300f,
                 Reflectivity: 0.08f,
-                Transparency: 0.65f,
+                Transparency: 0.92f,
                 RefractiveIndex: 1.5f);
 
             // Left bright yellow light
