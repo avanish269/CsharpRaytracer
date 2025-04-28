@@ -34,6 +34,15 @@ namespace CsharpRaytracer
                 0.0f,  // No transmission (solid, opaque)
                 1.33f);  // Refractive index of water
 
+            Material wetWhiteFloor = new Material(
+                DiffuseCoefficient: new Vector3(0.7f, 0.7f, 0.7f), // slightly reduced diffuse
+                SpecularCoefficient: new Vector3(0.02f, 0.02f, 0.02f), // boosted specular to fake fresnel
+                AmbientCoefficient: new Vector3(0.1f, 0.1f, 0.1f),
+                SpecularExponent: 200f, // sharper specular for smooth wet floor
+                Reflectivity: 0.7f,
+                Transparency: 0.0f,
+                RefractiveIndex: 1.33f);
+
             Material darkBrown = new Material(
                 new Vector3(0.396f, 0.263f, 0.129f),  // Dark brown color for diffuse reflection
                 new Vector3(0.396f, 0.263f, 0.129f),  // Same color for specular reflection
@@ -42,6 +51,15 @@ namespace CsharpRaytracer
                 0.35f,  // 35% of light is reflected
                 0.65f,  // 65% of light passes through
                 1.52f);  // Refractive index of glass
+
+            Material solidDarkBrownGlass = new Material(
+                DiffuseCoefficient: new Vector3(0.2f, 0.1f, 0.05f) * 0.35f,
+                SpecularCoefficient: new Vector3(0.08f, 0.08f, 0.08f),
+                AmbientCoefficient: new Vector3(0.02f, 0.01f, 0.005f),
+                SpecularExponent: 300f,
+                Reflectivity: 0.08f,    // ~8% reflection at normal incidence (glass-like)
+                Transparency: 0.65f,    // 1 - Reflectivity
+                RefractiveIndex: 1.5f);
 
             Material silver = new Material(
                 new Vector3(0.50754f, 0.50754f, 0.50754f),  // Silver diffuse color
@@ -52,6 +70,15 @@ namespace CsharpRaytracer
                 0.0f,  // No transmission (solid)
                 1.0f);  // Same as air, as it’s a solid object
 
+            Material silverPlate = new Material(
+                DiffuseCoefficient: new Vector3(0.02f, 0.02f, 0.02f) * 0.45f,
+                SpecularCoefficient: new Vector3(0.95f, 0.93f, 0.88f) * 0.45f,
+                AmbientCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
+                SpecularExponent: 400f,
+                Reflectivity: 0.9f,
+                Transparency: 0.0f,
+                RefractiveIndex: 0.0f);
+
             Material gold = new Material(
                 new Vector3(0.75164f, 0.60648f, 0.22648f),  // Gold color for diffuse reflection
                 new Vector3(0.628281f, 0.555802f, 0.366065f),  // Gold-like specular reflection
@@ -61,6 +88,15 @@ namespace CsharpRaytracer
                 0.0f,  // No transmission
                 1.0f);  // Same as air, solid object
 
+            Material goldBowl = new Material(
+                DiffuseCoefficient: new Vector3(0.75f, 0.61f, 0.23f) * 0.45f,
+                SpecularCoefficient: new Vector3(1.0f, 0.71f, 0.29f) * 0.45f,
+                AmbientCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
+                SpecularExponent: 300f,
+                Reflectivity: 0.9f,
+                Transparency: 0.0f,
+                RefractiveIndex: 0.0f);
+
             Material glass = new Material(
                 new Vector3(0.6588f, 0.8f, 0.8431f),  // Light blue color for the glass
                 new Vector3(0.9f, 0.9f, 0.9f),  // High specular reflection (shiny glass)
@@ -69,6 +105,15 @@ namespace CsharpRaytracer
                 0.35f,  // 35% of light is reflected
                 0.65f,  // 65% of light passes through
                 1.52f);  // Refractive index of glass
+
+            Material colorlessGlass = new Material(
+                DiffuseCoefficient: new Vector3(0.02f, 0.02f, 0.02f) * 0.35f,
+                SpecularCoefficient: new Vector3(0.08f, 0.08f, 0.08f),
+                AmbientCoefficient: new Vector3(0.0f, 0.0f, 0.0f),
+                SpecularExponent: 300f,
+                Reflectivity: 0.08f,
+                Transparency: 0.65f,
+                RefractiveIndex: 1.5f);
 
             // Left bright yellow light
             this.lights.Add(
@@ -125,7 +170,7 @@ namespace CsharpRaytracer
                     new Vector3(0.0f, 1.0f, 0.0f),
                     u: new Vector3(50, 0, 0),
                     v: new Vector3(0, 0, 50),
-                    white));
+                    wetWhiteFloor));
 
             // Tabletop
             this.sceneObjects.Add(new Cuboid(
@@ -140,7 +185,7 @@ namespace CsharpRaytracer
                 75f,
                 1f,
                 75f,
-                darkBrown));
+                solidDarkBrownGlass));
 
             // Back left leg
             this.sceneObjects.Add(new Cuboid(
@@ -155,7 +200,7 @@ namespace CsharpRaytracer
                 2.0f,
                 75.0f,
                 2.0f,
-                darkBrown));
+                solidDarkBrownGlass));
 
             // Back right leg
             this.sceneObjects.Add(new Cuboid(
@@ -170,7 +215,7 @@ namespace CsharpRaytracer
                 2.0f,
                 75.0f,
                 2.0f,
-                darkBrown));
+                solidDarkBrownGlass));
 
             // Front left leg
             this.sceneObjects.Add(new Cuboid(
@@ -185,7 +230,7 @@ namespace CsharpRaytracer
                 2.0f,
                 75.0f,
                 2.0f,
-                darkBrown));
+                solidDarkBrownGlass));
 
             // Front right leg
             this.sceneObjects.Add(new Cuboid(
@@ -200,7 +245,7 @@ namespace CsharpRaytracer
                 2.0f,
                 75.0f,
                 2.0f,
-                darkBrown));
+                solidDarkBrownGlass));
 
             // Plate
             this.sceneObjects.Add(
@@ -208,7 +253,7 @@ namespace CsharpRaytracer
                     new Vector3(0f, 26.5f, -150f),
                     new Vector3(0f, 27.5f, -150f),
                     10.0f,
-                    silver,
+                    silverPlate,
                     0.0f));
 
             // Bowl
@@ -216,7 +261,7 @@ namespace CsharpRaytracer
                 new Vector3(0f, 32f, -150f),
                 new Vector3(0f, -1f, 0f),
                 5f,
-                gold,
+                goldBowl,
                 0.25f));
 
             // Front tumbler
@@ -225,7 +270,7 @@ namespace CsharpRaytracer
                     new Vector3(0f, 26.5f, -137f),
                     new Vector3(0f, 36.5f, -137f),
                     3.0f,
-                    glass,
+                    colorlessGlass,
                     0.25f));
 
             // Back tumbler
@@ -234,7 +279,7 @@ namespace CsharpRaytracer
                     new Vector3(0f, 26.5f, -163f),
                     new Vector3(0f, 36.5f, -163f),
                     3f,
-                    glass,
+                    colorlessGlass,
                     0.25f));
 
             // Left tumbler
@@ -243,7 +288,7 @@ namespace CsharpRaytracer
                     new Vector3(-13f, 26.5f, -150f),
                     new Vector3(-13f, 36.5f, -150f),
                     3f,
-                    glass,
+                    colorlessGlass,
                     0.25f));
 
             // Right tumbler
@@ -252,7 +297,7 @@ namespace CsharpRaytracer
                     new Vector3(13f, 26.5f, -150f),
                     new Vector3(13f, 36.5f, -150f),
                     3f,
-                    glass,
+                    colorlessGlass,
                     0.25f));
         }
 
