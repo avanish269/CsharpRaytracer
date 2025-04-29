@@ -56,7 +56,7 @@ namespace CsharpRaytracer
             const float fieldOfView = 45.0f;
             Vector3 cameraLooksAt = new Vector3(0, 26f, -150);
             Vector3 worldUp = new Vector3(0, 1, 0);
-            const float radiusOfCameraSphere = 150.0f;
+            const float radiusOfCameraSphere = 200.0f;
             float latitudeAngle = 30 * MathF.PI / 180;
             float longitudeAngle = 0 * MathF.PI / 180;
 
