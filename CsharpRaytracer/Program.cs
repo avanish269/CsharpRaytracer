@@ -53,8 +53,12 @@ namespace CsharpRaytracer
 
             Scene scene = new Scene();
 
-            float fieldOfView = 45.0f;
-            float angle = 30 * MathF.PI / 180;
+            const float fieldOfView = 45.0f;
+            Vector3 cameraLooksAt = new Vector3(0, 26f, -150);
+            Vector3 worldUp = new Vector3(0, 1, 0);
+            const float radiusOfCameraSphere = 150.0f;
+            float latitudeAngle = 30 * MathF.PI / 180;
+            float longitudeAngle = 0 * MathF.PI / 180;
 
             var nativeWindowSettings = new NativeWindowSettings()
             {
@@ -113,22 +117,50 @@ namespace CsharpRaytracer
                     {
                         window.Close();
                     }
+
+                    if (window.KeyboardState.IsKeyDown(Keys.Left))
+                    {
+                        longitudeAngle -= 15.0f * MathF.PI / 180.0f;
+                        longitudeAngle %= 2 * MathF.PI;
+                        Console.WriteLine(longitudeAngle);
+                    }
+
+                    if (window.KeyboardState.IsKeyDown(Keys.Right))
+                    {
+                        longitudeAngle += 15.0f * MathF.PI / 180.0f;
+                        longitudeAngle %= 2 * MathF.PI;
+                        Console.WriteLine(longitudeAngle);
+                    }
+
+                    if (window.KeyboardState.IsKeyDown(Keys.Up))
+                    {
+                        latitudeAngle += 15.0f * MathF.PI / 180.0f;
+                        latitudeAngle %= 2 * MathF.PI;
+                        Console.WriteLine(latitudeAngle);
+                    }
+
+                    if (window.KeyboardState.IsKeyDown(Keys.Down))
+                    {
+                        latitudeAngle -= 15.0f * MathF.PI / 180.0f;
+                        latitudeAngle %= 2 * MathF.PI;
+                        Console.WriteLine(latitudeAngle);
+                    }
                 };
 
                 window.RenderFrame += (FrameEventArgs e) =>
                 {
                     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-                    Vector3 source = new Vector3(
-                        -120.0f,
-                        32.0f + (150.0f * MathF.Sin(angle)),
-                        -150.0f * (1 - MathF.Cos(angle)));
-                    Vector3 destination = new Vector3(0, 32, -150);
-                    Vector3 cameraUp = new Vector3(0, 1, 0);
+                    float cosLat = MathF.Cos(latitudeAngle);
+                    float sinLat = MathF.Sin(latitudeAngle);
+                    float cosLong = MathF.Cos(longitudeAngle);
+                    float sinLong = MathF.Sin(longitudeAngle);
+                    Vector3 conversionMatrix = new Vector3(cosLat * sinLong, sinLat, cosLat * cosLong);
+                    Vector3 cameraAt = cameraLooksAt + (radiusOfCameraSphere * conversionMatrix);
                     Camera camera = new Camera(
-                        source,
-                        destination,
-                        cameraUp,
+                        cameraAt,
+                        cameraLooksAt,
+                        worldUp,
                         fieldOfView,
                         window.Size.Y,
                         window.Size.X);

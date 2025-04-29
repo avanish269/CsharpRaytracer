@@ -26,17 +26,16 @@ namespace CsharpRaytracer.Core
         private float aspectRatio;
 
 
-        public Camera(Vector3 source, Vector3 destination, Vector3 camUp, float fov, float height, float width)
+        public Camera(Vector3 source, Vector3 destination, Vector3 worldUp, float fov, float height, float width)
         {
             this.source = source;
             this.destination = destination;
-            this.camUp = camUp;
             this.fieldOfView = fov * MathF.PI / 180.0f;
             this.height = height;
             this.width = width;
 
             this.camDir = Vector3.Normalize(destination - source);
-            this.camRight = Vector3.Normalize(Vector3.Cross(this.camDir, camUp));
+            this.camRight = Vector3.Normalize(Vector3.Cross(this.camDir, worldUp));
             this.camUp = Vector3.Normalize(Vector3.Cross(this.camRight, this.camDir));
             this.halfTanFov = MathF.Tan(this.fieldOfView / 2);
             this.aspectRatio = width / height;

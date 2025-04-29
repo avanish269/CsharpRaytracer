@@ -14,7 +14,7 @@ namespace CsharpRaytracer.Lighting
         private Vector3 DirectionFromPoint;
 
         public DirectionalLight(Vector3 source, Vector3 destination, float intensity, Vector3 color)
-            : base(constantAttenuation: 1, linearAttenuation: 0, quadraticAttenuation: 0, intensity: intensity, color: color)
+            : base(constantAttenuation: 1.0f, linearAttenuation: 0.0f, quadraticAttenuation: 0.0f, intensity: intensity, color: color)
         {
             this.Source = source;
             this.Direction = Vector3.Normalize(destination - source);
