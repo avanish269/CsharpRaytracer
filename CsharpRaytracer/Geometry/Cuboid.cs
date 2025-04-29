@@ -144,34 +144,37 @@ namespace CsharpRaytracer.Geometry
             float tMin = float.NegativeInfinity;
             float tMax = float.PositiveInfinity;
 
-            for (int axis = 0; axis < 3; axis++)
+            // Axis - X
             {
-                float origin = GetAxis(localOrigin, axis);
-                float direction = GetAxis(localDirection, axis);
-                float min = GetAxis(this.boxMin, axis);
-                float max = GetAxis(this.boxMax, axis);
+                float invD = 1f / localDirection.X;
+                float t1 = (this.boxMin.X - localOrigin.X) * invD;
+                float t2 = (this.boxMax.X - localOrigin.X) * invD;
+                if (invD < 0f) (t1, t2) = (t2, t1);
+                tMin = MathF.Max(tMin, t1);
+                tMax = MathF.Min(tMax, t2);
+                if (tMin > tMax) return false;
+            }
 
-                if (MathF.Abs(direction) > Constants.Epsilon)
-                {
-                    float t1 = (min - origin) / direction;
-                    float t2 = (max - origin) / direction;
+            // Axis - Y
+            {
+                float invD = 1f / localDirection.Y;
+                float t1 = (this.boxMin.Y - localOrigin.Y) * invD;
+                float t2 = (this.boxMax.Y - localOrigin.Y) * invD;
+                if (invD < 0f) (t1, t2) = (t2, t1);
+                tMin = MathF.Max(tMin, t1);
+                tMax = MathF.Min(tMax, t2);
+                if (tMin > tMax) return false;
+            }
 
-                    if (t1 > t2)
-                    {
-                        (t1, t2) = (t2, t1);
-                    }
-
-                    tMin = MathF.Max(tMin, t1);
-                    tMax = MathF.Min(tMax, t2);
-
-                    if (tMin > tMax)
-                        return false;
-                }
-                else
-                {
-                    if (origin < min || origin > max)
-                        return false;
-                }
+            // Axis - Z
+            {
+                float invD = 1f / localDirection.Z;
+                float t1 = (this.boxMin.Z - localOrigin.Z) * invD;
+                float t2 = (this.boxMax.Z - localOrigin.Z) * invD;
+                if (invD < 0f) (t1, t2) = (t2, t1);
+                tMin = MathF.Max(tMin, t1);
+                tMax = MathF.Min(tMax, t2);
+                if (tMin > tMax) return false;
             }
 
             if (tMax < 0)
@@ -181,7 +184,7 @@ namespace CsharpRaytracer.Geometry
 
             Vector3 localIntersectionPoint = localOrigin + t * localDirection;
 
-            Vector3 localNormal = Vector3.Zero;
+            Vector3 localNormal;
             if (MathF.Abs(localIntersectionPoint.X - this.boxMin.X) < Constants.Offset1e4f)
                 localNormal = new Vector3(-1, 0, 0);
             else if (MathF.Abs(localIntersectionPoint.X - this.boxMax.X) < Constants.Offset1e4f)
@@ -192,33 +195,18 @@ namespace CsharpRaytracer.Geometry
                 localNormal = new Vector3(0, 1, 0);
             else if (MathF.Abs(localIntersectionPoint.Z - this.boxMin.Z) < Constants.Offset1e4f)
                 localNormal = new Vector3(0, 0, -1);
-            else if (MathF.Abs(localIntersectionPoint.Z - this.boxMax.Z) < Constants.Offset1e4f)
+            else
                 localNormal = new Vector3(0, 0, 1);
 
             Vector3 intersectionPoint = Vector3.Transform(localIntersectionPoint, this.RotationMartrix) + this.Center;
-            Vector3 normal = Vector3.TransformNormal(localNormal, this.RotationMartrix);
-            normal = Vector3.Normalize(normal);
+            Vector3 normal = Vector3.Normalize(Vector3.TransformNormal(localNormal, this.RotationMartrix));
 
             if (Vector3.Dot(normal, rayDirection) > 0)
-            {
                 normal = Vector3.Negate(normal);
-            }
 
             intersectionInfo = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);
 
             return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float GetAxis(Vector3 v, int axis)
-        {
-            return axis switch
-            {
-                0 => v.X,
-                1 => v.Y,
-                2 => v.Z,
-                _ => throw new ArgumentOutOfRangeException(nameof(axis), "Axis must be 0, 1, or 2.")
-            };
         }
     }
 }
