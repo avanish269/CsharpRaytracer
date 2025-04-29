@@ -393,6 +393,8 @@ namespace CsharpRaytracer.Core
                 float offset = Constants.Offset + intersectionInfo.SceneObject.Thickness;
                 Vector3 shadowRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
 
+                float rayDotNormal = Vector3.Dot(rayDirection, intersectionInfo.NormalAtIntersection);
+
                 foreach (Light light in this.lights)
                 {
                     Vector3 shadowRayDirection = light.GetShadowRayDirection(shadowRayOrigin);
@@ -439,7 +441,7 @@ namespace CsharpRaytracer.Core
 
                 if (intersectionInfo.Material.Reflectivity > 0)
                 {
-                    Vector3 reflectedRayDirection = rayDirection - (2 * Vector3.Dot(rayDirection, intersectionInfo.NormalAtIntersection) * intersectionInfo.NormalAtIntersection);
+                    Vector3 reflectedRayDirection = rayDirection - (2 * rayDotNormal * intersectionInfo.NormalAtIntersection);
                     Vector3 reflectedRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
                     totalIlluminance += intersectionInfo.Material.Reflectivity * this.RayCast(reflectedRayOrigin, reflectedRayDirection, depth + 1);
                 }
@@ -447,7 +449,7 @@ namespace CsharpRaytracer.Core
                 if (intersectionInfo.Material.Transparency > 0)
                 {
                     float eta = 1.0f / intersectionInfo.Material.RefractiveIndex;
-                    float cosi = -Vector3.Dot(rayDirection, intersectionInfo.NormalAtIntersection);
+                    float cosi = -rayDotNormal;
                     float k = 1 - (eta * eta * (1 - (cosi * cosi)));
                     if (k > 0) // k < 0 means TIR
                     {
@@ -458,7 +460,7 @@ namespace CsharpRaytracer.Core
                     }
                     else
                     {
-                        Vector3 reflectedRayDirection = rayDirection - (2 * Vector3.Dot(rayDirection, intersectionInfo.NormalAtIntersection) * intersectionInfo.NormalAtIntersection);
+                        Vector3 reflectedRayDirection = rayDirection - (2 * rayDotNormal * intersectionInfo.NormalAtIntersection);
                         Vector3 reflectedRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
                         totalIlluminance += intersectionInfo.Material.Transparency * this.RayCast(reflectedRayOrigin, reflectedRayDirection, depth + 1);
                     }
