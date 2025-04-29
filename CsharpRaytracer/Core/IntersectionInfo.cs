@@ -18,8 +18,8 @@ namespace CsharpRaytracer.Core
         public IntersectionInfo()
         {
             this.TForIntersection = float.PositiveInfinity;
-            this.IntersectionPoint = Vector3.Zero;
-            this.NormalAtIntersection = Vector3.Zero;
+            this.IntersectionPoint = default;
+            this.NormalAtIntersection = default;
             this.Material = null;
             this.SceneObject = null;
         }

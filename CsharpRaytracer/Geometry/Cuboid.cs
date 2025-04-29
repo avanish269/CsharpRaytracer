@@ -28,7 +28,13 @@ namespace CsharpRaytracer.Geometry
 
         private Matrix4x4 RotationMartrix;
 
-        Dictionary<Vector3, HashSet<Vector3>> Adjacency;
+        private readonly Dictionary<Vector3, HashSet<Vector3>> Adjacency;
+
+        private readonly Matrix4x4 invRotation;
+
+        private readonly Vector3 boxMin;
+
+        private readonly Vector3 boxMax;
 
         public Cuboid(
             Vector3 corner1,
@@ -54,6 +60,11 @@ namespace CsharpRaytracer.Geometry
 
             this.BuildEdges();
             this.BuildRotationMatrix();
+
+            Matrix4x4.Invert(this.RotationMartrix, out this.invRotation);
+
+            this.boxMin = new Vector3(-this.Width / 2, -this.Height / 2, -this.Depth / 2);
+            this.boxMax = new Vector3(this.Width / 2, this.Height / 2, this.Depth / 2);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -127,12 +138,8 @@ namespace CsharpRaytracer.Geometry
         {
             intersectionInfo = new IntersectionInfo();
 
-            Matrix4x4.Invert(this.RotationMartrix, out Matrix4x4 invRotation);
-            Vector3 localOrigin = Vector3.Transform(rayOrigin - this.Center, invRotation);
-            Vector3 localDirection = Vector3.Transform(rayDirection, invRotation);
-
-            Vector3 boxMin = new Vector3(-this.Width / 2, -this.Height / 2, -this.Depth / 2);
-            Vector3 boxMax = new Vector3(this.Width / 2, this.Height / 2, this.Depth / 2);
+            Vector3 localOrigin = Vector3.Transform(rayOrigin - this.Center, this.invRotation);
+            Vector3 localDirection = Vector3.Transform(rayDirection, this.invRotation);
 
             float tMin = float.NegativeInfinity;
             float tMax = float.PositiveInfinity;
@@ -141,8 +148,8 @@ namespace CsharpRaytracer.Geometry
             {
                 float origin = GetAxis(localOrigin, axis);
                 float direction = GetAxis(localDirection, axis);
-                float min = GetAxis(boxMin, axis);
-                float max = GetAxis(boxMax, axis);
+                float min = GetAxis(this.boxMin, axis);
+                float max = GetAxis(this.boxMax, axis);
 
                 if (MathF.Abs(direction) > Constants.Epsilon)
                 {
@@ -175,17 +182,17 @@ namespace CsharpRaytracer.Geometry
             Vector3 localIntersectionPoint = localOrigin + t * localDirection;
 
             Vector3 localNormal = Vector3.Zero;
-            if (MathF.Abs(localIntersectionPoint.X - boxMin.X) < Constants.Offset1e4f)
+            if (MathF.Abs(localIntersectionPoint.X - this.boxMin.X) < Constants.Offset1e4f)
                 localNormal = new Vector3(-1, 0, 0);
-            else if (MathF.Abs(localIntersectionPoint.X - boxMax.X) < Constants.Offset1e4f)
+            else if (MathF.Abs(localIntersectionPoint.X - this.boxMax.X) < Constants.Offset1e4f)
                 localNormal = new Vector3(1, 0, 0);
-            else if (MathF.Abs(localIntersectionPoint.Y - boxMin.Y) < Constants.Offset1e4f)
+            else if (MathF.Abs(localIntersectionPoint.Y - this.boxMin.Y) < Constants.Offset1e4f)
                 localNormal = new Vector3(0, -1, 0);
-            else if (MathF.Abs(localIntersectionPoint.Y - boxMax.Y) < Constants.Offset1e4f)
+            else if (MathF.Abs(localIntersectionPoint.Y - this.boxMax.Y) < Constants.Offset1e4f)
                 localNormal = new Vector3(0, 1, 0);
-            else if (MathF.Abs(localIntersectionPoint.Z - boxMin.Z) < Constants.Offset1e4f)
+            else if (MathF.Abs(localIntersectionPoint.Z - this.boxMin.Z) < Constants.Offset1e4f)
                 localNormal = new Vector3(0, 0, -1);
-            else if (MathF.Abs(localIntersectionPoint.Z - boxMax.Z) < Constants.Offset1e4f)
+            else if (MathF.Abs(localIntersectionPoint.Z - this.boxMax.Z) < Constants.Offset1e4f)
                 localNormal = new Vector3(0, 0, 1);
 
             Vector3 intersectionPoint = Vector3.Transform(localIntersectionPoint, this.RotationMartrix) + this.Center;
