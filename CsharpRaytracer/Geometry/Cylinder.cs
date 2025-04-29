@@ -37,76 +37,38 @@ namespace CsharpRaytracer.Geometry
         {
             intersectionInfo = new IntersectionInfo();
 
-            float closestIntersection = float.PositiveInfinity;
+            float closestT = float.PositiveInfinity;
 
-            bool outerHit = this.CheckIntersectionForCylinder(
-                rayOrigin,
-                rayDirection,
-                this.OuterRadius,
-                isOuter: true,
-                out IntersectionInfo outerInfo);
-
-            if (outerHit)
+            if (this.CheckIntersectionForCylinder(rayOrigin, rayDirection, this.OuterRadius, true, out var outerInfo)
+                && outerInfo.TForIntersection < closestT)
             {
-                if (outerInfo.TForIntersection < closestIntersection)
-                {
-                    closestIntersection = outerInfo.TForIntersection;
-                    intersectionInfo.Copy(outerInfo);
-                }
+                closestT = outerInfo.TForIntersection;
+                intersectionInfo.Copy(outerInfo);
             }
 
-            bool innerHit = false;
-            IntersectionInfo tInner = intersectionInfo;
-            if (this.Thickness > 0.0f)
+            if (this.Thickness > 0.0f
+                && this.CheckIntersectionForCylinder(rayOrigin, rayDirection, this.InnerRadius, false, out var innerInfo)
+                && innerInfo.TForIntersection < closestT)
             {
-                innerHit = this.CheckIntersectionForCylinder(
-                    rayOrigin,
-                    rayDirection,
-                    this.InnerRadius,
-                    isOuter: false,
-                    out tInner);
+                closestT = innerInfo.TForIntersection;
+                intersectionInfo.Copy(innerInfo);
             }
 
-            if (innerHit)
+            if (this.CheckIntersectionForDisk(rayOrigin, rayDirection, this.OuterRadius, true, out var topInfo)
+                && topInfo.TForIntersection < closestT)
             {
-                if (tInner.TForIntersection < closestIntersection)
-                {
-                    closestIntersection = tInner.TForIntersection;
-                    intersectionInfo.Copy(tInner);
-                }
+                closestT = topInfo.TForIntersection;
+                intersectionInfo.Copy(topInfo);
             }
 
-            bool topHit = this.CheckIntersectionForDisk(
-                rayOrigin,
-                rayDirection,
-                this.OuterRadius,
-                isTop: true,
-                out IntersectionInfo topInfo);
-            if (topHit)
+            if (this.CheckIntersectionForDisk(rayOrigin, rayDirection, this.OuterRadius, false, out var bottomInfo)
+                && bottomInfo.TForIntersection < closestT)
             {
-                if (topInfo.TForIntersection < closestIntersection)
-                {
-                    closestIntersection = topInfo.TForIntersection;
-                    intersectionInfo.Copy(topInfo);
-                }
+                closestT = bottomInfo.TForIntersection;
+                intersectionInfo.Copy(bottomInfo);
             }
 
-            bool bottomHit = this.CheckIntersectionForDisk(
-                rayOrigin,
-                rayDirection,
-                this.OuterRadius,
-                isTop: false,
-                out IntersectionInfo bottomInfo);
-            if (bottomHit)
-            {
-                if (bottomInfo.TForIntersection < closestIntersection)
-                {
-                    closestIntersection = bottomInfo.TForIntersection;
-                    intersectionInfo.Copy(bottomInfo);
-                }
-            }
-
-            return closestIntersection < float.PositiveInfinity;
+            return closestT < float.PositiveInfinity;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -171,7 +133,8 @@ namespace CsharpRaytracer.Geometry
             if (MathF.Abs(denominator) < Constants.Epsilon)
                 return false;
 
-            float numerator = Vector3.Dot(this.BaseCenter - rayOrigin, this.Direction);
+            Vector3 center = isTop ? this.BaseCenter + (this.Height * this.Direction) : this.BaseCenter;
+            float numerator = Vector3.Dot(center - rayOrigin, this.Direction);
 
             float t = numerator / denominator;
 
@@ -179,13 +142,13 @@ namespace CsharpRaytracer.Geometry
                 return false;
 
             Vector3 intersectionPoint = rayOrigin + (t * rayDirection);
-            float distance = (intersectionPoint - this.BaseCenter).Length();
+            float distanceSquared = (intersectionPoint - this.BaseCenter).LengthSquared();
 
-            if (distance > radius)
+            if (distanceSquared > radius * radius)
                 return false;
 
             if (this.Thickness > Constants.Epsilon
-                && distance < this.InnerRadius)
+                && distanceSquared < this.InnerRadius * this.InnerRadius)
                 return false;
 
             Vector3 normal = isTop ? this.Direction : -this.Direction;
