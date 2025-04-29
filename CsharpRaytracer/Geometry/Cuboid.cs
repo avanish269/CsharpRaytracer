@@ -139,7 +139,7 @@ namespace CsharpRaytracer.Geometry
             intersectionInfo = null;
 
             Vector3 localOrigin = Vector3.Transform(rayOrigin - this.Center, this.invRotation);
-            Vector3 localDirection = Vector3.Transform(rayDirection, this.invRotation);
+            Vector3 localDirection = Vector3.TransformNormal(rayDirection, this.invRotation);
 
             float tMin = float.NegativeInfinity;
             float tMax = float.PositiveInfinity;
