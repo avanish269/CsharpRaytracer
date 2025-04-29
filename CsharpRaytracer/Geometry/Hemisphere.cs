@@ -32,15 +32,23 @@ namespace CsharpRaytracer.Geometry
 
         public override bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
         {
-            intersectionInfo = null;
+            intersectionInfo = new IntersectionInfo();
+
+            float closestIntersection = float.PositiveInfinity;
 
             // Check intersection with the outer sphere
             bool outerHit = this.CheckIntersectionForSphere(
                 rayOrigin,
                 rayDirection,
                 this.OuterRadius,
-                1,
+                isOuter: true,
                 out IntersectionInfo outerInfo);
+
+            if (outerHit && outerInfo.TForIntersection < closestIntersection)
+            {
+                closestIntersection = outerInfo.TForIntersection;
+                intersectionInfo.Copy(outerInfo);
+            }
 
             bool innerHit = false;
             IntersectionInfo innerInfo = null;
@@ -50,11 +58,14 @@ namespace CsharpRaytracer.Geometry
                     rayOrigin,
                     rayDirection,
                     this.InnerRadius,
-                    1,
+                    isOuter: false,
                     out innerInfo);
+            }
 
-                if (innerHit)
-                    innerInfo.NormalAtIntersection = Vector3.Negate(innerInfo.NormalAtIntersection);
+            if (innerHit && innerInfo.TForIntersection < closestIntersection)
+            {
+                closestIntersection = innerInfo.TForIntersection;
+                intersectionInfo.Copy(innerInfo);
             }
 
             bool planeHit = this.CheckIntersectionWithPlane(
@@ -62,29 +73,19 @@ namespace CsharpRaytracer.Geometry
                 rayDirection,
                 out IntersectionInfo planeInfo);
 
-            if (outerHit && (!innerHit || (outerInfo.TForIntersection < planeInfo.TForIntersection && outerInfo.TForIntersection < innerInfo.TForIntersection)))
+            if (planeHit && planeInfo.TForIntersection < closestIntersection)
             {
-                intersectionInfo = outerInfo;
-            }
-            else if (innerHit && innerInfo.TForIntersection < planeInfo.TForIntersection)
-            {
-                intersectionInfo = innerInfo;
-            }
-            else if (planeHit)
-            {
-                intersectionInfo = planeInfo;
+                closestIntersection = planeInfo.TForIntersection;
+                intersectionInfo.Copy(planeInfo);
             }
 
-            if (intersectionInfo == null)
-                return false;
-
-            return true;
+            return closestIntersection < float.PositiveInfinity;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool CheckIntersectionForSphere(Vector3 rayOrigin, Vector3 rayDirection, float r, int clipSign, out IntersectionInfo info)
+        private bool CheckIntersectionForSphere(Vector3 rayOrigin, Vector3 rayDirection, float r, bool isOuter, out IntersectionInfo info)
         {
-            info = new IntersectionInfo();
+            info = null;
             Vector3 oc = rayOrigin - this.Center;
             float a = Vector3.Dot(rayDirection, rayDirection);
             float b = 2.0f * Vector3.Dot(oc, rayDirection);
@@ -111,13 +112,14 @@ namespace CsharpRaytracer.Geometry
 
                 Vector3 intersectionPoint = rayOrigin + (t * rayDirection);
                 Vector3 ic = intersectionPoint - this.Center;
-                float hemisphereDot = Vector3.Dot(ic, this.Normal);
 
-                bool isPointOnCorrectHemiphere = clipSign > 0 ? hemisphereDot >= 0.0f : hemisphereDot <= 0.0f;
-
-                if (isPointOnCorrectHemiphere)
+                if (Vector3.Dot(ic, this.Normal) >= 0.0f)
                 {
                     Vector3 normal = Vector3.Normalize(intersectionPoint - this.Center);
+
+                    if (!isOuter)
+                        normal = Vector3.Negate(normal);
+
                     info = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);
                     return true;
                 }
@@ -130,7 +132,7 @@ namespace CsharpRaytracer.Geometry
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool CheckIntersectionWithPlane(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
         {
-            intersectionInfo = new IntersectionInfo();
+            intersectionInfo = null;
 
             // We assume the plane equation is (P - Center) · Normal = 0
             float denominator = Vector3.Dot(rayDirection, this.Normal);

@@ -112,7 +112,7 @@ namespace CsharpRaytracer.Geometry
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool CheckIntersectionForCylinder(Vector3 rayOrigin, Vector3 rayDirection, float radius, bool isOuter, out IntersectionInfo info)
         {
-            info = new IntersectionInfo();
+            info = null;
             Vector3 D_parallel = Vector3.Dot(rayDirection, this.Direction) * this.Direction;
             Vector3 D_perpendicular = rayDirection - D_parallel;
 
@@ -165,7 +165,7 @@ namespace CsharpRaytracer.Geometry
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool CheckIntersectionForDisk(Vector3 rayOrigin, Vector3 rayDirection, float radius, bool isTop, out IntersectionInfo info)
         {
-            info = new IntersectionInfo();
+            info = null;
             float denominator = Vector3.Dot(rayDirection, this.Direction);
 
             if (MathF.Abs(denominator) < Constants.Epsilon)
