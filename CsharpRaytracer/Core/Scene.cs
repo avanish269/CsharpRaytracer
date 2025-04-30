@@ -317,6 +317,15 @@ namespace CsharpRaytracer.Core
                     glass,
                     1.0f));
 
+            // Create fluid inside front tumbler (inner cylinder)
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(0f, 26.5f, -137f),
+                    new Vector3(0f, 31.5f, -137f),
+                    2.0f - Constants.Offset1e3f,
+                    colorlessWater,
+                    0.0f));
+
             // Back tumbler
             this.sceneObjects.Add(
                 new Cylinder(
@@ -325,6 +334,15 @@ namespace CsharpRaytracer.Core
                     3f,
                     glass,
                     1.0f));
+
+            // Create fluid inside back tumbler (inner cylinder)
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(0f, 26.5f, -163f),
+                    new Vector3(0f, 31.5f, -163f),
+                    2.0f - Constants.Offset1e3f,
+                    wineRedWater,
+                    0.0f));
 
             // Left tumbler
             this.sceneObjects.Add(
@@ -335,6 +353,15 @@ namespace CsharpRaytracer.Core
                     glass,
                     1.0f));
 
+            // Create fluid inside left tumbler (inner cylinder)
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(-13f, 26.5f, -150f),
+                    new Vector3(-13f, 31.5f, -150f),
+                    2.0f - Constants.Offset1e3f,
+                    brightOrangeWater,
+                    0.0f));
+
             // Right tumbler
             this.sceneObjects.Add(
                 new Cylinder(
@@ -343,6 +370,15 @@ namespace CsharpRaytracer.Core
                     3f,
                     glass,
                     1.0f));
+
+            // Create fluid inside right tumbler (inner cylinder)
+            this.sceneObjects.Add(
+                new Cylinder(
+                    new Vector3(13f, 26.5f, -150f),
+                    new Vector3(13f, 31.5f, -150f),
+                    2.0f - Constants.Offset1e3f,
+                    lemonYellowWater,
+                    0.0f));
         }
 
         public bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)

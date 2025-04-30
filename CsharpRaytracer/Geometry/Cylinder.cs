@@ -122,6 +122,9 @@ namespace CsharpRaytracer.Geometry
                 if (!isOuter)
                     normal = -normal;
 
+                if (Vector3.Dot(normal, rayDirection) > 0)
+                    normal = -normal;
+
                 info = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);
                 return true;
             }
