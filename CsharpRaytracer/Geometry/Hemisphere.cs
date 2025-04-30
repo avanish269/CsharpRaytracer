@@ -118,7 +118,7 @@ namespace CsharpRaytracer.Geometry
                     Vector3 normal = Vector3.Normalize(intersectionPoint - this.Center);
 
                     if (!isOuter)
-                        normal = Vector3.Negate(normal);
+                        normal = -normal;
 
                     info = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);
                     return true;
@@ -160,7 +160,7 @@ namespace CsharpRaytracer.Geometry
             Vector3 normal = this.Normal;
             if (Vector3.Dot(normal, rayDirection) > 0)
             {
-                normal = Vector3.Negate(normal);
+                normal = -normal;
             }
 
             intersectionInfo = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);

@@ -70,6 +70,10 @@ namespace CsharpRaytracer.Geometry
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void BuildEdges()
         {
+            float widthSquared = this.Width * this.Width;
+            float heightSquared = this.Height * this.Height;
+            float depthSquared = this.Depth * this.Depth;
+
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
@@ -77,11 +81,11 @@ namespace CsharpRaytracer.Geometry
                     if (i == j)
                         continue;
 
-                    float distance = (this.Corners[i] - this.Corners[j]).Length();
+                    float distanceSquared = (this.Corners[i] - this.Corners[j]).LengthSquared();
 
-                    if (ApproximatelyEquals(distance, this.Width)
-                        || ApproximatelyEquals(distance, this.Height)
-                        || ApproximatelyEquals(distance, this.Depth))
+                    if (ApproximatelyEquals(distanceSquared, widthSquared)
+                        || ApproximatelyEquals(distanceSquared, heightSquared)
+                        || ApproximatelyEquals(distanceSquared, depthSquared))
                     {
                         this.AddEdge(this.Corners[i], this.Corners[j]);
                         this.AddEdge(this.Corners[j], this.Corners[i]);
@@ -202,7 +206,7 @@ namespace CsharpRaytracer.Geometry
             Vector3 normal = Vector3.Normalize(Vector3.TransformNormal(localNormal, this.RotationMartrix));
 
             if (Vector3.Dot(normal, rayDirection) > 0)
-                normal = Vector3.Negate(normal);
+                normal = -normal;
 
             intersectionInfo = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);
 

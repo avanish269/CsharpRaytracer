@@ -54,7 +54,7 @@ namespace CsharpRaytracer.Geometry
 
             if (Vector3.Dot(normal, rayDirection) > 0)
             {
-                normal = Vector3.Negate(normal);
+                normal = -normal;
             }
 
             intersectionInfo = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);

@@ -101,8 +101,10 @@ namespace CsharpRaytracer.Geometry
                 (t0, t1) = (t1, t0);
             }
 
-            foreach (float t in new[] { t0, t1 })
+            for (int i = 0; i < 2; i++)
             {
+                float t = i == 0 ? t0 : t1;
+
                 if (t <= 0.0f)
                     continue;
 
@@ -115,7 +117,7 @@ namespace CsharpRaytracer.Geometry
                 Vector3 toHit = intersectionPoint - this.BaseCenter;
                 Vector3 normal = Vector3.Normalize(toHit - (Vector3.Dot(toHit, this.Direction) * this.Direction));
                 if (!isOuter)
-                    normal = Vector3.Negate(normal);
+                    normal = -normal;
 
                 info = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);
                 return true;
