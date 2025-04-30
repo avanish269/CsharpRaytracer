@@ -6,7 +6,7 @@ namespace CsharpRaytracer.Utilities
     {
         public const int MaxDepth = 4;
 
-        public const int NumberOfSamplesForAreaLight = 4;
+        public const int NumberOfSamplesForAreaLight = 8;
 
         public const float ShadowIntensity = 1.0f;
 
