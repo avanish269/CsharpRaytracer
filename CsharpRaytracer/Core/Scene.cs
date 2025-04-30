@@ -322,7 +322,7 @@ namespace CsharpRaytracer.Core
                 new Cylinder(
                     new Vector3(0f, 26.5f, -137f),
                     new Vector3(0f, 31.5f, -137f),
-                    2.0f - Constants.Offset1e3f,
+                    1.8f,
                     colorlessWater,
                     0.0f));
 
@@ -340,7 +340,7 @@ namespace CsharpRaytracer.Core
                 new Cylinder(
                     new Vector3(0f, 26.5f, -163f),
                     new Vector3(0f, 31.5f, -163f),
-                    2.0f - Constants.Offset1e3f,
+                    1.8f,
                     wineRedWater,
                     0.0f));
 
@@ -358,7 +358,7 @@ namespace CsharpRaytracer.Core
                 new Cylinder(
                     new Vector3(-13f, 26.5f, -150f),
                     new Vector3(-13f, 31.5f, -150f),
-                    2.0f - Constants.Offset1e3f,
+                    1.8f,
                     brightOrangeWater,
                     0.0f));
 
@@ -376,7 +376,7 @@ namespace CsharpRaytracer.Core
                 new Cylinder(
                     new Vector3(13f, 26.5f, -150f),
                     new Vector3(13f, 31.5f, -150f),
-                    2.0f - Constants.Offset1e3f,
+                    1.8f,
                     lemonYellowWater,
                     0.0f));
         }
@@ -426,10 +426,9 @@ namespace CsharpRaytracer.Core
                 Vector3 specularIlluminance = Vector3.Zero;
                 Vector3 totalIlluminance = Vector3.Zero;
 
+                float rayDotNormal = Vector3.Dot(rayDirection, intersectionInfo.NormalAtIntersection);
                 float offset = Constants.Offset + intersectionInfo.SceneObject.Thickness;
                 Vector3 shadowRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
-
-                float rayDotNormal = Vector3.Dot(rayDirection, intersectionInfo.NormalAtIntersection);
 
                 foreach (Light light in this.lights)
                 {
@@ -477,7 +476,7 @@ namespace CsharpRaytracer.Core
 
                 if (intersectionInfo.Material.Reflectivity > 0)
                 {
-                    Vector3 reflectedRayDirection = rayDirection - (2 * rayDotNormal * intersectionInfo.NormalAtIntersection);
+                    Vector3 reflectedRayDirection = Vector3.Normalize(rayDirection - (2 * rayDotNormal * intersectionInfo.NormalAtIntersection));
                     Vector3 reflectedRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
                     totalIlluminance += intersectionInfo.Material.Reflectivity * this.RayCast(reflectedRayOrigin, reflectedRayDirection, depth + 1);
                 }
@@ -490,13 +489,13 @@ namespace CsharpRaytracer.Core
                     if (k > 0) // k < 0 means TIR
                     {
                         Vector3 refractedRayDirection =
-                            (eta * rayDirection) + (((eta * cosi) - MathF.Sqrt(k)) * intersectionInfo.NormalAtIntersection);
+                            Vector3.Normalize((eta * rayDirection) + (((eta * cosi) - MathF.Sqrt(k)) * intersectionInfo.NormalAtIntersection));
                         Vector3 refractedRayOrigin = intersectionInfo.IntersectionPoint - (intersectionInfo.NormalAtIntersection * offset);
                         totalIlluminance += intersectionInfo.Material.Transparency * this.RayCast(refractedRayOrigin, refractedRayDirection, depth + 1);
                     }
                     else
                     {
-                        Vector3 reflectedRayDirection = rayDirection - (2 * rayDotNormal * intersectionInfo.NormalAtIntersection);
+                        Vector3 reflectedRayDirection = Vector3.Normalize(rayDirection - (2 * rayDotNormal * intersectionInfo.NormalAtIntersection));
                         Vector3 reflectedRayOrigin = intersectionInfo.IntersectionPoint + (intersectionInfo.NormalAtIntersection * offset);
                         totalIlluminance += intersectionInfo.Material.Transparency * this.RayCast(reflectedRayOrigin, reflectedRayDirection, depth + 1);
                     }
