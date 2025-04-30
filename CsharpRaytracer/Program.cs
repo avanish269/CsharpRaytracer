@@ -54,11 +54,19 @@ namespace CsharpRaytracer
             Scene scene = new Scene();
 
             const float fieldOfView = 45.0f;
-            Vector3 cameraLooksAt = new Vector3(0, 26f, -150);
+            Vector3 cameraLooksAt = new Vector3(0, 25.5f, -150);
             Vector3 worldUp = new Vector3(0, 1, 0);
-            const float radiusOfCameraSphere = 200.0f;
             float latitudeAngle = 30 * MathF.PI / 180;
             float longitudeAngle = 0 * MathF.PI / 180;
+
+            const float heightOfBoundingBox = 151.0f;
+            const float widthOfBoundingBox = 100.0f;
+            const float depthOfBoundingBox = 100.0f;
+            const float halfWidth = widthOfBoundingBox / 2.0f;
+            const float halfHeight = heightOfBoundingBox / 2.0f;
+            const float halfDepth = depthOfBoundingBox / 2.0f;
+            float cornerDistance = MathF.Sqrt((halfWidth * halfWidth) + (halfHeight * halfHeight) + (halfDepth * halfDepth));
+            float radiusOfCameraSphere = cornerDistance / MathF.Sin(fieldOfView * MathF.PI / 360.0f);
 
             var nativeWindowSettings = new NativeWindowSettings()
             {
@@ -66,7 +74,7 @@ namespace CsharpRaytracer
                 //ClientSize = new Vector2i(640, 480),
 
                 // XGA
-                ClientSize = new Vector2i(1280, 720),
+                ClientSize = new Vector2i(1024, 768),
 
                 // WXGA
                 //ClientSize = new Vector2i(1280, 720),
@@ -89,26 +97,31 @@ namespace CsharpRaytracer
 
             using (var window = new GameWindow(GameWindowSettings.Default, nativeWindowSettings))
             {
-                byte[] data = new byte[window.Size.X * window.Size.Y * 3];
+                byte[] data = new byte[window.ClientSize.X * window.ClientSize.Y * 3];
 
                 double previousTime = 0.0;
                 int frameCount = 0;
+
+                float cosLat = MathF.Cos(latitudeAngle);
+                float sinLat = MathF.Sin(latitudeAngle);
+                float cosLong = MathF.Cos(longitudeAngle);
+                float sinLong = MathF.Sin(longitudeAngle);
 
                 window.Load += () =>
                 {
                     // Initialize OpenGL state
                     GL.ClearColor(0.5f, 1.0f, 1.0f, 0.0f);
-                    Console.WriteLine($"Width = {window.Size.X}, Height = {window.Size.Y}");
-                    openGLDraw.Init(window.Size.X, window.Size.Y);
-                    data = new byte[window.Size.X * window.Size.Y * 3];
+                    Console.WriteLine($"Width = {window.ClientSize.X}, Height = {window.ClientSize.Y}");
+                    openGLDraw.Init(window.ClientSize.X, window.ClientSize.Y);
+                    data = new byte[window.ClientSize.X * window.ClientSize.Y * 3];
                 };
 
                 window.Resize += (ResizeEventArgs e) =>
                 {
-                    GL.Viewport(0, 0, window.Size.X, window.Size.Y);
-                    Console.WriteLine($"Width = {window.Size.X}, Height = {window.Size.Y}");
-                    openGLDraw.Init(window.Size.X, window.Size.Y);
-                    data = new byte[window.Size.X * window.Size.Y * 3];
+                    GL.Viewport(0, 0, window.ClientSize.X, window.ClientSize.Y);
+                    Console.WriteLine($"Width = {window.ClientSize.X}, Height = {window.ClientSize.Y}");
+                    openGLDraw.Init(window.ClientSize.X, window.ClientSize.Y);
+                    data = new byte[window.ClientSize.X * window.ClientSize.Y * 3];
                 };
 
                 window.UpdateFrame += (FrameEventArgs e) =>
@@ -151,10 +164,10 @@ namespace CsharpRaytracer
                 {
                     GL.Clear(ClearBufferMask.ColorBufferBit);
 
-                    float cosLat = MathF.Cos(latitudeAngle);
-                    float sinLat = MathF.Sin(latitudeAngle);
-                    float cosLong = MathF.Cos(longitudeAngle);
-                    float sinLong = MathF.Sin(longitudeAngle);
+                    cosLat = MathF.Cos(latitudeAngle);
+                    sinLat = MathF.Sin(latitudeAngle);
+                    cosLong = MathF.Cos(longitudeAngle);
+                    sinLong = MathF.Sin(longitudeAngle);
                     Vector3 conversionMatrix = new Vector3(cosLat * sinLong, sinLat, cosLat * cosLong);
                     Vector3 cameraAt = cameraLooksAt + (radiusOfCameraSphere * conversionMatrix);
                     Camera camera = new Camera(
@@ -162,13 +175,13 @@ namespace CsharpRaytracer
                         cameraLooksAt,
                         worldUp,
                         fieldOfView,
-                        window.Size.Y,
-                        window.Size.X);
+                        window.ClientSize.Y,
+                        window.ClientSize.X);
 
-                    Render(data, window.Size.Y, window.Size.X, scene, camera);
+                    Render(data, window.ClientSize.Y, window.ClientSize.X, scene, camera);
 
                     // Draw to screen
-                    openGLDraw.Draw(data, window.Size.X, window.Size.Y, 0, 0);
+                    openGLDraw.Draw(data, window.ClientSize.X, window.ClientSize.Y, 0, 0);
 
                     frameCount++;
                     double currentTime = GLFW.GetTime();

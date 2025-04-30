@@ -159,7 +159,7 @@ namespace CsharpRaytracer.Core
                 RefractiveIndex: 1.33f  // Water refractive index
             );
 
-            // Left bright yellow light
+            // Back left bright yellow light
             this.lights.Add(
                 new DirectionalLight(
                     new Vector3(-37.5f, 101f, -187.5f),
@@ -167,7 +167,7 @@ namespace CsharpRaytracer.Core
                     1.0f,
                     new Vector3(1.0f, 1.0f, 0.0f)));
 
-            // Top bright yellow light
+            // Back right bright yellow light
             this.lights.Add(
                 new DirectionalLight(
                     new Vector3(37.5f, 101f, -187.5f),
@@ -175,7 +175,7 @@ namespace CsharpRaytracer.Core
                     1.0f,
                     new Vector3(1.0f, 1.0f, 0.0f)));
 
-            // Bottom bright cyan light
+            // Front left bright cyan light
             this.lights.Add(
                 new DirectionalLight(
                     new Vector3(-37.5f, 101f, -112.5f),
@@ -183,7 +183,7 @@ namespace CsharpRaytracer.Core
                     1.0f,
                     new Vector3(0.0f, 1.0f, 1.0f)));
 
-            // Right bright cyan light
+            // Front right bright cyan light
             this.lights.Add(
                 new DirectionalLight(
                     new Vector3(37.5f, 101f, -112.5f),
@@ -315,7 +315,7 @@ namespace CsharpRaytracer.Core
                     new Vector3(0f, 36.5f, -137f),
                     3.0f,
                     glass,
-                    0.25f));
+                    1.0f));
 
             // Back tumbler
             this.sceneObjects.Add(
@@ -324,7 +324,7 @@ namespace CsharpRaytracer.Core
                     new Vector3(0f, 36.5f, -163f),
                     3f,
                     glass,
-                    0.25f));
+                    1.0f));
 
             // Left tumbler
             this.sceneObjects.Add(
@@ -333,7 +333,7 @@ namespace CsharpRaytracer.Core
                     new Vector3(-13f, 36.5f, -150f),
                     3f,
                     glass,
-                    0.25f));
+                    1.0f));
 
             // Right tumbler
             this.sceneObjects.Add(
@@ -342,7 +342,7 @@ namespace CsharpRaytracer.Core
                     new Vector3(13f, 36.5f, -150f),
                     3f,
                     glass,
-                    0.25f));
+                    1.0f));
         }
 
         public bool CheckIntersection(Vector3 rayOrigin, Vector3 rayDirection, out IntersectionInfo intersectionInfo)
