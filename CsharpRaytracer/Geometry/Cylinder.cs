@@ -10,6 +10,8 @@ namespace CsharpRaytracer.Geometry
     {
         private Vector3 BaseCenter;
 
+        private Vector3 TopCenter;
+
         private Vector3 Direction;
 
         private readonly float OuterRadius;
@@ -27,6 +29,7 @@ namespace CsharpRaytracer.Geometry
             : base(material, thickness)
         {
             this.BaseCenter = baseCenter;
+            this.TopCenter = topCenter;
             this.Direction = Vector3.Normalize(topCenter - baseCenter);
             this.OuterRadius = outerRadius;
             this.InnerRadius = outerRadius - thickness;
@@ -135,7 +138,7 @@ namespace CsharpRaytracer.Geometry
             if (MathF.Abs(denominator) < Constants.Epsilon)
                 return false;
 
-            Vector3 center = isTop ? this.BaseCenter + (this.Height * this.Direction) : this.BaseCenter;
+            Vector3 center = isTop ? this.TopCenter : this.BaseCenter;
             float numerator = Vector3.Dot(center - rayOrigin, this.Direction);
 
             float t = numerator / denominator;
@@ -144,7 +147,7 @@ namespace CsharpRaytracer.Geometry
                 return false;
 
             Vector3 intersectionPoint = rayOrigin + (t * rayDirection);
-            float distanceSquared = (intersectionPoint - this.BaseCenter).LengthSquared();
+            float distanceSquared = (intersectionPoint - center).LengthSquared();
 
             if (distanceSquared > radius * radius)
                 return false;
