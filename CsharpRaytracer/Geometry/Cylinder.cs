@@ -86,6 +86,10 @@ namespace CsharpRaytracer.Geometry
             Vector3 localRayOrigin_perpendicular = localRayOrigin - localRayOrigin_parallel;
 
             float a = Vector3.Dot(D_perpendicular, D_perpendicular);
+
+            if (Math.Abs(a) < Constants.Epsilon)
+                return false;
+
             float b = 2.0f * Vector3.Dot(localRayOrigin_perpendicular, D_perpendicular);
             float c = Vector3.Dot(localRayOrigin_perpendicular, localRayOrigin_perpendicular) - (radius * radius);
             float discriminant = (b * b) - (4 * a * c);
@@ -108,7 +112,7 @@ namespace CsharpRaytracer.Geometry
             {
                 float t = i == 0 ? t0 : t1;
 
-                if (t <= 0.0f)
+                if (t <= Constants.Epsilon)
                     continue;
 
                 Vector3 intersectionPoint = rayOrigin + (t * rayDirection);
@@ -120,9 +124,6 @@ namespace CsharpRaytracer.Geometry
                 Vector3 toHit = intersectionPoint - this.BaseCenter;
                 Vector3 normal = Vector3.Normalize(toHit - (Vector3.Dot(toHit, this.Direction) * this.Direction));
                 if (!isOuter)
-                    normal = -normal;
-
-                if (Vector3.Dot(normal, rayDirection) > 0)
                     normal = -normal;
 
                 info = new IntersectionInfo(t, intersectionPoint, normal, this.Material, this);
@@ -146,7 +147,7 @@ namespace CsharpRaytracer.Geometry
 
             float t = numerator / denominator;
 
-            if (t <= 0)
+            if (t <= Constants.Epsilon)
                 return false;
 
             Vector3 intersectionPoint = rayOrigin + (t * rayDirection);
