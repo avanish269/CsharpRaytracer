@@ -8,6 +8,8 @@ namespace CsharpRaytracer.Utilities
 
         public const int NumberOfSamplesForAreaLight = 8;
 
+        public const int NumberOfSamplesPerPixel = 16;
+
         public const float ShadowIntensity = 1.0f;
 
         public const float Epsilon = 1e-6f;

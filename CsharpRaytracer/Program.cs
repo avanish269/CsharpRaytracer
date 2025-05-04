@@ -6,6 +6,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using Vector3 = System.Numerics.Vector3;
 
@@ -13,6 +14,8 @@ namespace CsharpRaytracer
 {
     internal static class Program
     {
+        internal static readonly Random Random = new Random();
+
         static void Render(byte[] data, int height, int width, Scene scene, Camera camera)
         {
             ParallelOptions parallelOptions = new ParallelOptions
@@ -26,9 +29,17 @@ namespace CsharpRaytracer
 
                 for (int i = 0; i < width; i++)
                 {
-                    camera.GetRayAtPixel(i, j, out Vector3 rayOrigin, out Vector3 rayDirection);
+                    Vector3 color = Vector3.Zero;
+                    for (int s = 0; s < Constants.NumberOfSamplesPerPixel; s++)
+                    {
+                        float di = Random.NextSingle();
+                        float dj = Random.NextSingle();
+                        camera.GetRayAtPixel(i + di, j + dj, out Vector3 rayOrigin, out Vector3 rayDirection);
 
-                    Vector3 color = scene.RayCast(rayOrigin, rayDirection, depth: 0);
+                        color += scene.RayCast(rayOrigin, rayDirection, depth: 0);
+                    }
+
+                    color /= Constants.NumberOfSamplesPerPixel;
 
                     color = color.ApplyReinhardToneMapping();
                     color = color.FastGammaCorrect();
